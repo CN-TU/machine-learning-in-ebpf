@@ -1,6 +1,7 @@
 #include <uapi/linux/ptrace.h>
 #include <net/sock.h>
 #include <bcc/proto.h>
+#include "openstate.h"
 
 #define IP_TCP 6
 #define ETH_HLEN 14
@@ -16,75 +17,149 @@
 int filter(struct __sk_buff *skb) {
 
 	u8 *cursor = 0;
+  // int current_state;
 
-	struct ethernet_t *ethernet = cursor_advance(cursor, sizeof(*ethernet));
-	//filter IP packets (ethernet type = 0x0800)
-	if (!(ethernet->type == 0x0800)) {
-		goto DROP;
-	}
+  /* Initialize most fields to 0 in case we do not parse associated headers.
+   * The alternative is to set it to 0 once we know we will not meet the header
+   * (e.g. when we see ARP, we won't have dst IP / port...). It would prevent
+   * to affect a value twice in some cases, but it is prone to error when
+   * adding parsing for other protocols.
+   */
+  // struct StateTableKey state_idx;
+  // // state_idx.ether_type // Will be set anyway
+  // state_idx.__padding16 = 0;
+  // state_idx.ip_src = 0;
+  // state_idx.ip_dst = 0;
 
-	struct ip_t *ip = cursor_advance(cursor, sizeof(*ip));
-	//filter TCP packets (ip next protocol = 0x06)
-	if (ip->nextp != IP_TCP) {
-		goto DROP;
-	}
+  struct XFSMTableKey xfsm_idx;
+  // xfsm_idx.state // Will be set anyway before XFSM lookup
+  xfsm_idx.l4_proto = 0;
+	xfsm_idx.ip_src = 0;
+	xfsm_idx.ip_dst = 0;
+  xfsm_idx.src_port = 0;
+  xfsm_idx.dst_port = 0;
+  xfsm_idx.__padding8  = 0;
+  xfsm_idx.__padding16 = 0;
 
-	u32  tcp_header_length = 0;
-	u32  ip_header_length = 0;
-	u32  payload_offset = 0;
-	u32  payload_length = 0;
+  struct ethernet_t *ethernet;
+  struct ip_t       *ip;
+  struct udp_t      *l4;
 
-	//calculate ip header length
-	//value to multiply * 4
-	//e.g. ip->hlen = 5 ; IP Header Length = 5 x 4 byte = 20 byte
-	ip_header_length = ip->hlen << 2;    //SHL 2 -> *4 multiply
+  /* Headers parsing */
 
-	// //check ip header length against minimum
-	// if (ip_header_length < sizeof(*ip)) {
-	// 	goto DROP;
-	// }
+  ethernet: {
+    ethernet = cursor_advance(cursor, sizeof(*ethernet));
+    // state_idx.ether_type = ethernet->type;
 
-	//shift cursor forward for dynamic ip header size
-	void *_ = cursor_advance(cursor, (ip_header_length-sizeof(*ip)));
+    switch (ethernet->type) {
+      case ETH_P_IP:   goto ip;
+      case ETH_P_ARP:  goto arp;
+      default:         goto EOP;
+    }
+  }
 
-	struct tcp_t *tcp = cursor_advance(cursor, sizeof(*tcp));
+  ip: {
+    ip = cursor_advance(cursor, sizeof(*ip));
+    // state_idx.ip_src = ip->src;
+    // state_idx.ip_dst = ip->dst;
 
-	//calculate tcp header length
-	//value to multiply *4
-	//e.g. tcp->offset = 5 ; TCP Header Length = 5 x 4 byte = 20 byte
-	tcp_header_length = tcp->offset << 2; //SHL 2 -> *4 multiply
+    xfsm_idx.ip_src = ip->src;
+    xfsm_idx.ip_dst = ip->dst;
 
-	//calculate payload offset and length
-	payload_offset = ETH_HLEN + ip_header_length + tcp_header_length;
-	payload_length = ip->tlen - ip_header_length - tcp_header_length;
+    switch (ip->nextp) {
+      case IPPROTO_TCP: goto l4;
+      case IPPROTO_UDP: goto l4;
+			// FIXME: Is this correct?
+      default:          goto l4;
+    }
+  }
 
-	//http://stackoverflow.com/questions/25047905/http-request-minimum-size-in-bytes
-	//minimum length of http request is always geater than 7 bytes
-	//avoid invalid access memory
-	//include empty payload
-	// if(payload_length < 7) {
-	// 	goto DROP;
-	// }
+  arp: {
+    /* We could parse ARP packet here if we needed to retrieve some fields from
+     * the ARP header for the lookup.
+     */
+    goto xfsmlookup;
+  }
 
-	//load first 7 byte of payload into p (payload_array)
-	//direct access to skb not allowed
-	unsigned long p[7];
-	int i = 0;
-	for (i = 0; i < 7; i++) {
-		p[i] = load_byte(skb , payload_offset + i);
-	}
+  l4: {
+    /* Here We only need dst and src ports from L4, and they are at the same
+     * location for TCP and UDP; so do not switch on cases, just use UDP
+     * cursor.
+     */
+    l4 = cursor_advance(cursor, sizeof(*l4));
+    goto xfsmlookup;
+  }
 
-	// //no HTTP match
-	// goto DROP;
+  /* Tables lookups */
 
-	bpf_trace_printk("Got packet with length: %u\n", ip->tlen);
+  // statelookup: {
+  //   struct StateTableLeaf *state_val = state_table.lookup(&state_idx);
 
-	//keep the packet and send it to userspace returning -1
-	KEEP:
-	return -1;
+  //   if (state_val) {
+  //     current_state = state_val->state;
+  //     /* If we found a state, go on and search XFSM table for this state and
+  //      * for current event.
+  //      */
+  //     goto xfsmlookup;
+  //   }
+  //   goto EOP;
+  // }
 
-	//drop the packet returning 0
-	DROP:
-	return 0;
+  xfsmlookup: {
+    /* We don't want to match on L4 src port, so set it at 0 here and in XFSM
+     * initialization, since we have no wildcard mechanism. */
+    // xfsm_idx.state    = current_state;
+    xfsm_idx.l4_proto = ip->nextp;
+    xfsm_idx.src_port = l4->sport;
+    xfsm_idx.dst_port = l4->dport;
+    xfsm_idx.__padding8  = 0;
+    xfsm_idx.__padding16 = 0;
 
+    struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
+
+		if (!xfsm_val) {
+			struct XFSMTableLeaf zero = {0, {0,0,0,0,0,0,0,0,0,0,0,0}, false};
+			xfsm_table.insert(&xfsm_idx, &zero);
+			xfsm_val = xfsm_table.lookup(&xfsm_idx);
+		}
+
+    // if (xfsm_val) {
+      /* Update state table. We re-use the StateTableKey we had initialized
+       * already. We update this rule with the new state provided by XFSM
+       * table.
+       */
+      // struct StateTableLeaf new_state = { xfsm_val->next_state };
+      // state_table.update(&state_idx, &new_state);
+
+      /* At last, execute the action for the current state, that we obtained
+       * from the XFSM table.
+       * Users should add new actions here.
+       */
+      // switch (xfsm_val->action) {
+      //   case ACTION_DROP:
+      //     return TC_CLS_DEFAULT;
+      //   case ACTION_FORWARD:
+      //     return TC_CLS_NOMATCH;
+      //   default:
+      //     return TC_CLS_NOMATCH; // XXX Should actually return an error code.
+      // }
+    // }
+
+    /* So we did not find a match in XFSM table... For port knocking, default
+     * action is "return to initial state". We have yet to find a way to
+     * properly implement a default action. XXX
+     */
+    // enum states {
+    //   DEFAULT,
+    //   STEP_1,
+    //   STEP_2,
+    //   OPEN
+    // };
+    // struct StateTableLeaf new_state = { DEFAULT };
+    // state_table.update(&state_idx, &new_state);
+    return TC_CLS_NOMATCH;
+  }
+
+EOP:
+  return TC_CLS_NOMATCH;
 }

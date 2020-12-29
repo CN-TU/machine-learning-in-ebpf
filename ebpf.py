@@ -1,13 +1,35 @@
 import bcc
 import socket
 import os
+import numpy as np
 
 interface="eth0"
 
 print(f"binding socket to #{interface}")
 
+prefix_path = "/home/max/repos/adversarial-recurrent-ids/runs/Dec29_19-15-36_hyperion_0_3"
+
+with open('%s_childrenLeft' % prefix_path, 'rb') as f:
+	children_left = np.fromfile(f, dtype=np.uint64)
+	bcc.BPF(text=f'BPF_ARRAY(children_left, u64, {len(children_left)});')
+	children_left_table = b.get_table("children_left")
+	for i in range(len(children_left)):
+		children_left_table[i] = children_left[i]
+with open('%s_childrenRight' % prefix_path, 'rb') as f:
+	children_right = np.fromfile(f, dtype=np.uint64)
+	bcc.BPF(text=f'BPF_ARRAY(children_right, u64, {len(children_right)});')
+with open('%s_value' % prefix_path, 'rb') as f:
+	value = np.fromfile(f, dtype=np.uint64)
+	bcc.BPF(text=f'BPF_ARRAY(value, u64, {len(value)});')
+with open('%s_feature' % prefix_path, 'rb') as f:
+	feature = np.fromfile(f, dtype=np.uint64)
+	bcc.BPF(text=f'BPF_ARRAY(feature, u64, {len(feature)});')
+with open('%s_threshold' % prefix_path, 'rb') as f:
+	threshold = np.fromfile(f, dtype=np.int64)
+	bcc.BPF(text=f'BPF_ARRAY(threshold, s64, {len(threshold)});')
+
 # initialize BPF - load source code from http-parse-simple.c
-bpf = bcc.BPF(src_file = "ebpf.c",debug = 0)
+bpf = bcc.BPF(src_file="ebpf.c",debug = 0)
 
 #load eBPF program http_filter of type SOCKET_FILTER into the kernel eBPF vm
 #more info about eBPF program types
