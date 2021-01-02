@@ -112,7 +112,7 @@ def run(vnet, prefix=""):
 
 		server_popen = hosts[1].Popen("iperf3 -V -4 -s".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		ebpf_popen = hosts[1].Popen(f"python3 ebpf.py {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		ebpf_popen = hosts[1].Popen(f"python3 ebpf_wrapper.py {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 		os.environ["file_name_for_logging"] = f"pcaps/{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.txt"
 		if opt.store_pcaps:
@@ -141,10 +141,10 @@ def run(vnet, prefix=""):
 
 		ebpf_popen.terminate()
 		out, err = ebpf_popen.stdout.read(), ebpf_popen.stderr.read()
-		# if out:
-		print("ebpf out", out.decode("utf-8"))
-		# if err:
-		print("ebpf err", err.decode("utf-8"))
+		if out:
+			print("ebpf out", out.decode("utf-8"))
+		if err:
+			print("ebpf err", err.decode("utf-8"))
 
 		server_popen.terminate()
 		out, err = server_popen.stdout.read(), server_popen.stderr.read()

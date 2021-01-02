@@ -5,10 +5,13 @@
 
 // #define abs(x) ((x)<0 ? -(x) : (x))
 
-#define MAX_TREE_DEPTH 100
+#define MAX_TREE_DEPTH 20
 
 #define IP_TCP 6
 #define ETH_HLEN 14
+
+#define TREE_LEAF -1
+#define TREE_UNDEFINED -2
 
 #define FIXED_POINT_DIGITS 16
 
@@ -29,7 +32,7 @@ int filter(struct __sk_buff *skb) {
 	u64* current_value = num_processed.lookup(&zero);
 	if (current_value != NULL) {
 		(*current_value) += 1;
-		num_processed.update(&zero, current_value);
+		// num_processed.update(&zero, current_value);
 	}
 
 	u8 *cursor = 0;
@@ -98,39 +101,21 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	l4: {
-		/* Here We only need dst and src ports from L4, and they are at the same
-		 * location for TCP and UDP; so do not switch on cases, just use UDP
-		 * cursor.
-		 */
 		l4 = cursor_advance(cursor, sizeof(*l4));
 		goto xfsmlookup;
 	}
 
-	/* Tables lookups */
-
-	// statelookup: {
-	//   struct StateTableLeaf *state_val = state_table.lookup(&state_idx);
-
-	//   if (state_val) {
-	//     current_state = state_val->state;
-	//     /* If we found a state, go on and search XFSM table for this state and
-	//      * for current event.
-	//      */
-	//     goto xfsmlookup;
-	//   }
-	//   goto EOP;
-	// }
-
 	xfsmlookup: {
-		/* We don't want to match on L4 src port, so set it at 0 here and in XFSM
-		 * initialization, since we have no wildcard mechanism. */
-		// xfsm_idx.state    = current_state;
 		xfsm_idx.l4_proto = ip->nextp;
 		xfsm_idx.src_port = l4->sport;
 		xfsm_idx.dst_port = l4->dport;
 		if (l4->sport > l4->dport) {
 			xfsm_idx.src_port = l4->dport;
 			xfsm_idx.dst_port = l4->sport;
+		}
+		if (ip->src > ip->dst) {
+			xfsm_idx.ip_src = ip->dst;
+			xfsm_idx.ip_dst = ip->src;
 		}
 		xfsm_idx.__padding8  = 0;
 		xfsm_idx.__padding16 = 0;
@@ -140,10 +125,12 @@ int filter(struct __sk_buff *skb) {
 		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
 
 		if (!xfsm_val) {
-			struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, 0, 0, false};
+			struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, 0, 0, 0, 0, false};
 			// XXX: WTF is this necessary?
 			zero.actual_src_port = l4->sport;
 			zero.actual_dst_port = l4->dport;
+			zero.actual_src_ip = ip->src;
+			zero.actual_dst_ip = ip->dst;
 			// struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, false};
 			xfsm_table.insert(&xfsm_idx, &zero);
 			xfsm_val = xfsm_table.lookup(&xfsm_idx);
@@ -151,6 +138,8 @@ int filter(struct __sk_buff *skb) {
 
 		if (xfsm_val != NULL) {
 			xfsm_val->num_packets += 1;
+
+			// bpf_trace_printk("Received %lu packets from port %u to port %u\n", xfsm_val->num_packets, (u32) l4->sport, (u32) l4->dport);
 
 			s64 sport = xfsm_val->actual_src_port;
 			s64 dport = xfsm_val->actual_dst_port;
@@ -189,6 +178,40 @@ int filter(struct __sk_buff *skb) {
 			s64 avg_dev_direction = xfsm_val->features[5]/xfsm_val->num_packets;
 
 			s64 all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
+
+			int current_node = 0;
+
+			bool valid = true;
+
+			u64 i;
+			#pragma clang loop unroll(full)
+			for (u64 i = 0; i < MAX_TREE_DEPTH; i++) {
+				s64* current_left_child = children_left.lookup(&current_node);
+				s64* current_right_child = children_right.lookup(&current_node);
+
+				s64* current_feature = feature.lookup(&current_node);
+				s64* current_threshold = threshold.lookup(&current_node);
+
+				if (current_feature == NULL || current_threshold == NULL || current_left_child == NULL || current_right_child == NULL || *current_left_child == TREE_LEAF) {
+					// XXX: Doesn't work with unrolling, god knows why
+					break;
+				} else {
+					// s64 real_feature_value = all_features[*current_feature];
+					// if (real_feature_value <= *current_threshold) {
+					// 	current_node = (u64) *current_left_child;
+					// } else {
+					// 	current_node = (u64) *current_right_child;
+					// }
+				}
+			}
+
+			bpf_trace_printk("i: %lu\n", i);
+
+			s64* correct_value = value.lookup(&current_node);
+
+			if (correct_value != NULL) {
+				xfsm_val->is_anomaly = (bool) correct_value;
+			}
 		}
 
 		// node = self.nodes
@@ -200,40 +223,6 @@ int filter(struct __sk_buff *skb) {
 		// 		else:
 		// 				node = &self.nodes[node.right_child]
 
-		// if (xfsm_val) {
-			/* Update state table. We re-use the StateTableKey we had initialized
-			 * already. We update this rule with the new state provided by XFSM
-			 * table.
-			 */
-			// struct StateTableLeaf new_state = { xfsm_val->next_state };
-			// state_table.update(&state_idx, &new_state);
-
-			/* At last, execute the action for the current state, that we obtained
-			 * from the XFSM table.
-			 * Users should add new actions here.
-			 */
-			// switch (xfsm_val->action) {
-			//   case ACTION_DROP:
-			//     return TC_CLS_DEFAULT;
-			//   case ACTION_FORWARD:
-			//     return TC_CLS_NOMATCH;
-			//   default:
-			//     return TC_CLS_NOMATCH; // XXX Should actually return an error code.
-			// }
-		// }
-
-		/* So we did not find a match in XFSM table... For port knocking, default
-		 * action is "return to initial state". We have yet to find a way to
-		 * properly implement a default action. XXX
-		 */
-		// enum states {
-		//   DEFAULT,
-		//   STEP_1,
-		//   STEP_2,
-		//   OPEN
-		// };
-		// struct StateTableLeaf new_state = { DEFAULT };
-		// state_table.update(&state_idx, &new_state);
 		return TC_CLS_NOMATCH;
 	}
 
