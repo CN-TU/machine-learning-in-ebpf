@@ -177,15 +177,40 @@ int filter(struct __sk_buff *skb) {
 			s64 avg_dev_delta = xfsm_val->features[4]/xfsm_val->num_packets;
 			s64 avg_dev_direction = xfsm_val->features[5]/xfsm_val->num_packets;
 
-			s64 all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
+			int zero_index = 0;
+			all_features.update(&zero_index, &sport);
+			int one_index = 0;
+			all_features.update(&one_index, &dport);
+			int two_index = 0;
+			all_features.update(&two_index, &protocol_identifier);
+			int three_index = 0;
+			all_features.update(&three_index, &total_length);
+			int four_index = 0;
+			all_features.update(&four_index, &delta);
+			int five_index = 0;
+			all_features.update(&five_index, &direction);
+			int six_index = 0;
+			all_features.update(&six_index, &avg_total_length);
+			int seven_index = 0;
+			all_features.update(&seven_index, &avg_delta);
+			int eight_index = 0;
+			all_features.update(&eight_index, &avg_direction);
+			int nine_index = 0;
+			all_features.update(&nine_index, &avg_dev_total_length);
+			int ten_index = 0;
+			all_features.update(&ten_index, &avg_dev_delta);
+			int eleven_index = 0;
+			all_features.update(&eleven_index, &avg_dev_direction);
+
+			// s64 all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
 
 			int current_node = 0;
 
 			bool valid = true;
 
-			u64 i;
-			#pragma clang loop unroll(full)
+			bpf_trace_printk("eggs\n");
 			for (u64 i = 0; i < MAX_TREE_DEPTH; i++) {
+				// bpf_trace_printk("i: %lu\n", i);
 				s64* current_left_child = children_left.lookup(&current_node);
 				s64* current_right_child = children_right.lookup(&current_node);
 
@@ -193,19 +218,20 @@ int filter(struct __sk_buff *skb) {
 				s64* current_threshold = threshold.lookup(&current_node);
 
 				if (current_feature == NULL || current_threshold == NULL || current_left_child == NULL || current_right_child == NULL || *current_left_child == TREE_LEAF) {
-					// XXX: Doesn't work with unrolling, god knows why
 					break;
 				} else {
-					// s64 real_feature_value = all_features[*current_feature];
-					// if (real_feature_value <= *current_threshold) {
-					// 	current_node = (u64) *current_left_child;
-					// } else {
-					// 	current_node = (u64) *current_right_child;
-					// }
+					s64* real_feature_value = all_features.lookup((int*) current_feature);
+					if (real_feature_value != NULL) {
+						if (*real_feature_value <= *current_threshold) {
+							current_node = (int) *current_left_child;
+						} else {
+							current_node = (int) *current_right_child;
+						}
+					} else {
+						break;
+					}
 				}
 			}
-
-			bpf_trace_printk("i: %lu\n", i);
 
 			s64* correct_value = value.lookup(&current_node);
 
