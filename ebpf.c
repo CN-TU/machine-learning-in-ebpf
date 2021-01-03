@@ -208,7 +208,7 @@ int filter(struct __sk_buff *skb) {
 
 			bool valid = true;
 
-			bpf_trace_printk("eggs\n");
+			// bpf_trace_printk("eggs\n");
 			for (u64 i = 0; i < MAX_TREE_DEPTH; i++) {
 				// bpf_trace_printk("i: %lu\n", i);
 				s64* current_left_child = children_left.lookup(&current_node);
