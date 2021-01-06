@@ -1,7 +1,18 @@
-// #include <uapi/linux/ptrace.h>
 #include <net/sock.h>
 #include <bcc/proto.h>
+
+#ifdef USERSPACE
 #include "openstate.h"
+#include <time.h>
+
+static unsigned long get_nsecs(void)
+{
+    struct timespec ts;
+
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * 1000000000UL + ts.tv_nsec;
+}
+#endif
 
 // #define abs(x) ((x)<0 ? -(x) : (x))
 
@@ -15,8 +26,6 @@
 
 #define FIXED_POINT_DIGITS 16
 
-BPF_ARRAY(num_processed, u64, 1);
-
 /*eBPF program.
 	Filter IP and TCP packets, having payload not empty
 	and containing "HTTP", "GET", "POST" ... as first bytes of payload
@@ -25,15 +34,27 @@ BPF_ARRAY(num_processed, u64, 1);
 	return  0 -> DROP the packet
 	return -1 -> KEEP the packet and return it to user space (userspace can read it from the socket_fd )
 */
+#ifdef USERSPACE
+int filter(struct __sk_buff *skb, struct shared_struct* actual_struct) {
+#else
 int filter(struct __sk_buff *skb) {
+#endif
 
+	#ifndef USERSPACE
 	u64 ts = bpf_ktime_get_ns();
+	#else
+	u64 ts = get_nsecs();
+	#endif
 	int zero = 0;
+
+	#ifndef USERSPACE
 	u64* current_value = num_processed.lookup(&zero);
 	if (current_value != NULL) {
 		(*current_value) += 1;
-		// num_processed.update(&zero, current_value);
 	}
+	#else
+	actual_struct->num_processed += 1;
+	#endif
 
 	u8 *cursor = 0;
 	// int current_state;
@@ -122,7 +143,11 @@ int filter(struct __sk_buff *skb) {
 
 		// bpf_trace_printk("Received packet with length %u from port %u to port %u\n", ip->tlen, (u32) l4->sport, (u32) l4->dport);
 
+		#ifdef USERSPACE
 		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
+		#else
+		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
+		#endif
 
 		if (!xfsm_val) {
 			struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, 0, 0, 0, 0, false};
@@ -206,7 +231,7 @@ int filter(struct __sk_buff *skb) {
 
 			int current_node = 0;
 
-			bpf_trace_printk("eggs\n");
+			// bpf_trace_printk("eggs\n");
 			for (u64 i = 0; i < MAX_TREE_DEPTH; i++) {
 				// bpf_trace_printk("i: %lu\n", i);
 				s64* current_left_child = children_left.lookup(&current_node);

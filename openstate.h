@@ -42,50 +42,47 @@
 #define TC_CLS_DEFAULT -1
 #define TC_CLS_NOMATCH  0
 
-/* Default available actions. Other user-defined action codes can be appended
- * here or defined in the main program, with higher values.
- */
-// #define ACTION_DROP    0
-// #define ACTION_FORWARD 1
-
-// /* Structures for index and value (a.k.a key and leaf) for state table */
-// struct StateTableKey {
-//   u16 ether_type;
-//   u16 __padding16;
-//   u32 ip_src;
-//   u32 ip_dst;
-// };
-
-// struct StateTableLeaf {
-//   int state;
-// };
-
 /* Structures for index and value (a.k.a key and leaf) for XFSM stable */
 struct XFSMTableKey {
-  u8  l4_proto;
-  u8  __padding8;
-  u16 __padding16;
-  u32 ip_src;
-  u32 ip_dst;
-  u16 src_port;
-  u16 dst_port;
+  uint8_t  l4_proto;
+  uint8_t  __padding8;
+  uint16_t __padding16;
+  uint32_t ip_src;
+  uint32_t ip_dst;
+  uint16_t src_port;
+  uint16_t dst_port;
 };
 
 struct XFSMTableLeaf {
-  u64 num_packets;
-  u64 last_packet_timestamp;
-  s64 features[6];
-  u16 actual_src_port;
-  u16 actual_dst_port;
-  u32 actual_src_ip;
-  u32 actual_dst_ip;
+  uint64_t num_packets;
+  uint64_t last_packet_timestamp;
+  int64_t features[6];
+  uint16_t actual_src_port;
+  uint16_t actual_dst_port;
+  uint32_t actual_src_ip;
+  uint32_t actual_dst_ip;
   bool is_anomaly;
 };
 
-// /* State table */
-// BPF_TABLE("hash", struct StateTableKey, struct StateTableLeaf, state_table, 256);
+#ifdef USERSPACE
 
-/* XFSM table */
-BPF_TABLE("lru_hash", struct XFSMTableKey,  struct XFSMTableLeaf,  xfsm_table,  256);
+#include "hashmap.h"
+
+struct shared_struct {
+	struct hashmap* xfsm_table;
+	uint64_t num_processed;
+	int64_t* children_left;
+	uint64_t children_left_len;
+	int64_t* children_right;
+	uint64_t children_right_len;
+	int64_t* value;
+	uint64_t value_len;
+	int64_t* feature;
+	uint64_t feature_len;
+	int64_t* threshold;
+	uint64_t threshold_len;
+};
+
+#endif
 
 #endif /* OPENSTATE_H */

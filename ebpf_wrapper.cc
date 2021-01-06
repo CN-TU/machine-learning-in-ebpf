@@ -14,6 +14,25 @@
 
 using namespace std;
 
+#ifdef USERSPACE
+#include "hashmap.c"
+#include "openstate.h"
+#include "jhash.h"
+
+static uint64_t hash_fn(const void *k, void *ctx)
+{
+	// This is bad since it only returns 32 bits
+	return (uint64_t) jhash(k, sizeof(XFSMTableKey), 0);
+}
+
+static bool equal_fn(const void *a, const void *b, void *ctx)
+{
+	XFSMTableKey* as = (XFSMTableKey*) a;
+	XFSMTableKey* bs = (XFSMTableKey*) b;
+	return as->l4_proto == bs->l4_proto && as->ip_src == bs->ip_src && as->ip_dst == bs->ip_dst && as->src_port == bs->src_port && as->dst_port == bs->dst_port;
+}
+#endif
+
 double time_to_run;
 const char interface[] = "eth0";
 string prefix_path = "/home/max/repos/adversarial-recurrent-ids/runs/Dec29_19-15-36_hyperion_0_3";
@@ -49,12 +68,17 @@ int main(int argc, char *argv[])
 	vector<int64_t> feature = read_file(prefix_path + "_feature");
 	vector<int64_t> threshold = read_file(prefix_path + "_threshold");
 
-	string maps_string = string("BPF_ARRAY(all_features, s64, 12);") +
+	#ifndef USERSPACE
+
+	string maps_string = string("#include \"openstate.h\"\n") +
+  "BPF_TABLE(\"lru_hash\", struct XFSMTableKey,  struct XFSMTableLeaf,  xfsm_table,  10000);" +
+	"BPF_ARRAY(num_processed, u64, 1);" +
+	"BPF_ARRAY(all_features, s64, 12);" +
 	"BPF_ARRAY(children_left, s64, " + to_string(children_left.size()) + ");" +
 	"BPF_ARRAY(children_right, s64, " + to_string(children_right.size()) + ");" +
 	"BPF_ARRAY(value, s64, " + to_string(value.size()) + ");" +
 	"BPF_ARRAY(feature, s64, " + to_string(feature.size()) + ");" +
-	"BPF_ARRAY(threshold, s64, " + to_string(threshold.size()) + ");";
+	"BPF_ARRAY(threshold, s64, " + to_string(threshold.size()) + ");\n";
 
 	std::ifstream source_stream("ebpf.c");
 	std::string ebpf_program((std::istreambuf_iterator<char>(source_stream)),
@@ -100,6 +124,7 @@ int main(int argc, char *argv[])
 		assert(res.code() == 0);
 	}
 
+
   int fd;
   res = bpf.load_func("filter", BPF_PROG_TYPE_SOCKET_FILTER, fd);
   assert(res.code() == 0);
@@ -114,13 +139,24 @@ int main(int argc, char *argv[])
 	auto current_time = std::chrono::system_clock::now();
 
 	std::this_thread::sleep_for(std::chrono::duration<double>(time_to_run) - (current_time - starttime));
-	// std::this_thread::sleep_for(std::chrono::seconds(100));
 
-	auto final_time = std::chrono::system_clock::now();
 	ebpf::BPFArrayTable<uint64_t> num_processed_table = bpf.get_array_table<uint64_t>("num_processed");
 	uint64_t actual_num_processed;
 	res = num_processed_table.get_value(0, actual_num_processed);
 	assert(res.code() == 0);
+
+	#else
+
+	hashmap* map = hashmap__new(hash_fn, equal_fn, NULL);
+	struct shared_struct ss = {map, 0, &children_left[0], children_left.size(), &children_right[0], children_right.size(), &value[0], value.size(), &feature[0], feature.size(), &threshold[0], threshold.size()};
+
+	int sd = -1;
+	sd = bpf_open_raw_sock("eth0");
+
+	uint64_t actual_num_processed = ss.num_processed;
+	#endif
+
+	auto final_time = std::chrono::system_clock::now();
 
 	cout << "Ran for " << ((double) (final_time-starttime).count())/1000000000 << "s, processed " << actual_num_processed << " packets" << endl;
 
