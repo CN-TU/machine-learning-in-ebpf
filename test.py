@@ -109,7 +109,7 @@ def run(vnet, prefix=""):
 
 		server_popen = hosts[1].Popen("iperf3 -V -4 -s".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		# ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		# ebpf_popen = hosts[1].Popen(f"python3 ebpf_wrapper.py {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 		os.environ["file_name_for_logging"] = f"pcaps/{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.txt"
@@ -122,6 +122,8 @@ def run(vnet, prefix=""):
 			tcpdump_receiver_popens.append(hosts[1].Popen(f"/usr/sbin/tcpdump -s {opt.bytes_to_capture} -i eth0 -w pcaps/receiver_{prefix}_tcp_port{opt.cport+10}_{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.pcap tcp and dst port {opt.cport} or src port {opt.cport}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE))
 
 		client_popen = hosts[0].Popen(f"iperf3 -V -4 -t {opt.time} --cport {opt.cport} -c host1".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+		ebpf_popen = hosts[1].Popen(["bash","-c",f"./ebpf_wrapper {opt.time-1}"])
 
 		time.sleep(opt.time)
 
@@ -141,6 +143,7 @@ def run(vnet, prefix=""):
 			print("server err", err.decode("utf-8"))
 
 		ebpf_popen.terminate()
+		# print("ebpf_popen.returncode", ebpf_popen.returncode)
 		out, err = ebpf_popen.stdout.read(), ebpf_popen.stderr.read()
 		if out:
 			print("ebpf out", out.decode("utf-8"))

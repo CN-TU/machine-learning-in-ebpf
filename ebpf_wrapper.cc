@@ -18,6 +18,7 @@ using namespace std;
 #include "hashmap.c"
 #include "openstate.h"
 #include "jhash.h"
+#include "ebpf.c"
 
 static uint64_t hash_fn(const void *k, void *ctx)
 {
@@ -30,6 +31,54 @@ static bool equal_fn(const void *a, const void *b, void *ctx)
 	XFSMTableKey* as = (XFSMTableKey*) a;
 	XFSMTableKey* bs = (XFSMTableKey*) b;
 	return as->l4_proto == bs->l4_proto && as->ip_src == bs->ip_src && as->ip_dst == bs->ip_dst && as->src_port == bs->src_port && as->dst_port == bs->dst_port;
+}
+
+// int open_raw_sock(const char *name)
+// {
+//   struct sockaddr_ll sll;
+//   int sock;
+
+//   sock = socket(PF_PACKET, SOCK_RAW | SOCK_CLOEXEC, htons(ETH_P_ALL));
+//   if (sock < 0) {
+//     fprintf(stderr, "cannot create raw socket\n");
+//     return -1;
+//   }
+
+//   /* Do not bind on empty interface names */
+//   if (!name || *name == '\0')
+//     return sock;
+
+//   memset(&sll, 0, sizeof(sll));
+//   sll.sll_family = AF_PACKET;
+//   sll.sll_ifindex = if_nametoindex(name);
+//   if (sll.sll_ifindex == 0) {
+//     fprintf(stderr, "Resolving device name to index: %s\n", strerror(errno));
+//     close(sock);
+//     return -1;
+//   }
+//   sll.sll_protocol = htons(ETH_P_ALL);
+//   if (bind(sock, (struct sockaddr *)&sll, sizeof(sll)) < 0) {
+//     fprintf(stderr, "bind to %s: %s\n", name, strerror(errno));
+//     close(sock);
+//     return -1;
+//   }
+
+//   return sock;
+// }
+
+#include <unistd.h>
+#include <fcntl.h>
+bool set_blocking_mode(int socket)
+{
+    bool ret = true;
+
+    const int flags = fcntl(socket, F_GETFL, 0);
+    // if ((flags & O_NONBLOCK) && !is_blocking) { info("set_blocking_mode(): socket was already in non-blocking mode"); return ret; }
+    // if (!(flags & O_NONBLOCK) && is_blocking) { info("set_blocking_mode(): socket was already in blocking mode"); return ret; }
+    // ret = 0 == fcntl(socket, F_SETFL, is_blocking ? flags ^ O_NONBLOCK : flags | O_NONBLOCK));
+    ret = 0 == fcntl(socket, F_SETFL, flags & (~O_NONBLOCK));
+
+    return ret;
 }
 #endif
 
@@ -150,10 +199,36 @@ int main(int argc, char *argv[])
 	hashmap* map = hashmap__new(hash_fn, equal_fn, NULL);
 	struct shared_struct ss = {map, 0, &children_left[0], children_left.size(), &children_right[0], children_right.size(), &value[0], value.size(), &feature[0], feature.size(), &threshold[0], threshold.size()};
 
+	void* buffer = (void*)malloc(65536);
+
 	int sd = -1;
 	sd = bpf_open_raw_sock("eth0");
+	set_blocking_mode(sd);
+
+	auto duration = std::chrono::duration<double>(time_to_run);
+
+	cout << "Initialized everything" << endl << flush;
+	while(true) {
+		int length = 0; /*length of the received frame*/
+
+		length = recv(sd, buffer, 65536, 0);
+		if (length == -1) { perror("recv"); }
+
+		cout << "before" << endl << flush;
+		filter(buffer, &ss);
+		cout << "after" << endl << flush;
+
+		auto current_time = std::chrono::system_clock::now();
+		cout << "duration " << duration.count() << " difference " << (current_time - starttime).count()/1000000000 << endl << flush;
+		if(duration < (current_time - starttime)/1000000000) {
+			cout << "Breaking" << endl << flush;
+			break;
+		}
+	}
+	cout << "Finished loop" << endl << flush;
 
 	uint64_t actual_num_processed = ss.num_processed;
+
 	#endif
 
 	auto final_time = std::chrono::system_clock::now();

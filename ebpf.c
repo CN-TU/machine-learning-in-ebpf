@@ -1,9 +1,12 @@
-#include <net/sock.h>
-#include <bcc/proto.h>
 
 #ifdef USERSPACE
 #include "openstate.h"
+#include <sys/socket.h>
 #include <time.h>
+#include "proto.h"
+#include <iostream>
+
+using namespace std;
 
 static unsigned long get_nsecs(void)
 {
@@ -12,6 +15,12 @@ static unsigned long get_nsecs(void)
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec * 1000000000UL + ts.tv_nsec;
 }
+
+#define cursor_advance(_cursor, _len) \
+  ({ void *_tmp = _cursor; _cursor += _len; _tmp; })
+#else
+#include <net/sock.h>
+#include <bcc/proto.h>
 #endif
 
 // #define abs(x) ((x)<0 ? -(x) : (x))
@@ -35,28 +44,30 @@ static unsigned long get_nsecs(void)
 	return -1 -> KEEP the packet and return it to user space (userspace can read it from the socket_fd )
 */
 #ifdef USERSPACE
-int filter(struct __sk_buff *skb, struct shared_struct* actual_struct) {
+int filter(void* skb, struct shared_struct* actual_struct) {
 #else
 int filter(struct __sk_buff *skb) {
 #endif
 
 	#ifndef USERSPACE
-	u64 ts = bpf_ktime_get_ns();
+	uint64_t ts = bpf_ktime_get_ns();
 	#else
-	u64 ts = get_nsecs();
+	uint64_t ts = get_nsecs();
+	cout << "survived get_nsecs" << endl << flush;
 	#endif
 	int zero = 0;
 
 	#ifndef USERSPACE
-	u64* current_value = num_processed.lookup(&zero);
+	uint64_t* current_value = num_processed.lookup(&zero);
 	if (current_value != NULL) {
 		(*current_value) += 1;
 	}
 	#else
 	actual_struct->num_processed += 1;
+	cout << "survived actual_struct->num_processed" << endl << flush;
 	#endif
 
-	u8 *cursor = 0;
+	uint8_t *cursor = 0;
 	// int current_state;
 
 	/* Initialize most fields to 0 in case we do not parse associated headers.
@@ -88,8 +99,11 @@ int filter(struct __sk_buff *skb) {
 	/* Headers parsing */
 
 	ethernet: {
+		cout << "ethernet" << endl << flush;
 		ethernet = cursor_advance(cursor, sizeof(*ethernet));
 		// state_idx.ether_type = ethernet->type;
+
+		cout << "after ethernet, ethernet->type " << ethernet->type << endl << flush;
 
 		switch (ethernet->type) {
 			case ETH_P_IP:   goto ip;
@@ -99,6 +113,7 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	ip: {
+		cout << "ip" << endl << flush;
 		ip = cursor_advance(cursor, sizeof(*ip));
 		// state_idx.ip_src = ip->src;
 		// state_idx.ip_dst = ip->dst;
@@ -115,6 +130,7 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	arp: {
+		cout << "arp" << endl << flush;
 		/* We could parse ARP packet here if we needed to retrieve some fields from
 		 * the ARP header for the lookup.
 		 */
@@ -122,11 +138,13 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	l4: {
+		cout << "l4" << endl << flush;
 		l4 = cursor_advance(cursor, sizeof(*l4));
 		goto xfsmlookup;
 	}
 
 	xfsmlookup: {
+		cout << "xfsmlookup" << endl << flush;
 		xfsm_idx.l4_proto = ip->nextp;
 		xfsm_idx.src_port = l4->sport;
 		xfsm_idx.dst_port = l4->dport;
@@ -141,43 +159,59 @@ int filter(struct __sk_buff *skb) {
 		xfsm_idx.__padding8  = 0;
 		xfsm_idx.__padding16 = 0;
 
-		// bpf_trace_printk("Received packet with length %u from port %u to port %u\n", ip->tlen, (u32) l4->sport, (u32) l4->dport);
+		// bpf_trace_printk("Received packet with length %u from port %u to port %u\n", ip->tlen, (uint32_t) l4->sport, (uint32_t) l4->dport);
 
 		#ifdef USERSPACE
-		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
+		cout << "before lookup" << endl << flush;
+		struct XFSMTableLeaf *xfsm_val = NULL;
+		bool ret = hashmap__find(actual_struct->xfsm_table, &xfsm_idx, &xfsm_val);
+		cout << "survived lookup" << endl << flush;
 		#else
 		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
 		#endif
 
 		if (!xfsm_val) {
+			#ifndef USERSPACE
 			struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, 0, 0, 0, 0, false};
-			// XXX: WTF is this necessary?
 			zero.actual_src_port = l4->sport;
 			zero.actual_dst_port = l4->dport;
 			zero.actual_src_ip = ip->src;
 			zero.actual_dst_ip = ip->dst;
-			// struct XFSMTableLeaf zero = {0, 0, {0,0,0,0,0,0}, false};
 			xfsm_table.insert(&xfsm_idx, &zero);
 			xfsm_val = xfsm_table.lookup(&xfsm_idx);
+			#else
+			cout << "before allocation" << endl << flush;
+			XFSMTableKey* xfsm_key_allocated = (XFSMTableKey*) calloc(1, sizeof(XFSMTableKey));
+			*xfsm_key_allocated = xfsm_idx;
+			XFSMTableLeaf* zero = (XFSMTableLeaf*) calloc(1, sizeof(XFSMTableLeaf));
+			zero->actual_src_port = l4->sport;
+			zero->actual_dst_port = l4->dport;
+			zero->actual_src_ip = ip->src;
+			zero->actual_dst_ip = ip->dst;
+			int err = hashmap__add(actual_struct->xfsm_table, xfsm_key_allocated, zero);
+			assert(err==0);
+			bool ret = hashmap__find(actual_struct->xfsm_table, xfsm_key_allocated, &xfsm_val);
+			cout << "after allocation" << endl << flush;
+			#endif
 		}
 
 		if (xfsm_val != NULL) {
 			xfsm_val->num_packets += 1;
 
-			// bpf_trace_printk("Received %lu packets from port %u to port %u\n", xfsm_val->num_packets, (u32) l4->sport, (u32) l4->dport);
+			// bpf_trace_printk("Received %lu packets from port %u to port %u\n", xfsm_val->num_packets, (uint32_t) l4->sport, (uint32_t) l4->dport);
 
-			s64 sport = xfsm_val->actual_src_port;
-			s64 dport = xfsm_val->actual_dst_port;
-			s64 protocol_identifier = ip->nextp;
-			s64 total_length = ip->tlen;
+			int64_t sport = xfsm_val->actual_src_port;
+			int64_t dport = xfsm_val->actual_dst_port;
+			int64_t protocol_identifier = ip->nextp;
+			int64_t total_length = ip->tlen;
 
-			s64 delta = 0;
+			int64_t delta = 0;
 			if (xfsm_val->last_packet_timestamp > 0) {
 				delta = ts - xfsm_val->last_packet_timestamp;
 			}
 			xfsm_val->last_packet_timestamp = ts;
 
-			s64 direction = l4->sport == xfsm_val->actual_src_port;
+			int64_t direction = l4->sport == xfsm_val->actual_src_port;
 
 			sport <<= FIXED_POINT_DIGITS;
 			dport <<= FIXED_POINT_DIGITS;
@@ -190,18 +224,19 @@ int filter(struct __sk_buff *skb) {
 			xfsm_val->features[1] += delta;
 			xfsm_val->features[2] += direction;
 
-			s64 avg_total_length = xfsm_val->features[0]/xfsm_val->num_packets;
-			s64 avg_delta = xfsm_val->features[1]/xfsm_val->num_packets;
-			s64 avg_direction = xfsm_val->features[2]/xfsm_val->num_packets;
+			int64_t avg_total_length = xfsm_val->features[0]/xfsm_val->num_packets;
+			int64_t avg_delta = xfsm_val->features[1]/xfsm_val->num_packets;
+			int64_t avg_direction = xfsm_val->features[2]/xfsm_val->num_packets;
 
 			xfsm_val->features[3] += abs(total_length-avg_total_length);
 			xfsm_val->features[4] += abs(delta-avg_delta);
 			xfsm_val->features[5] += abs(direction-avg_direction);
 
-			s64 avg_dev_total_length = xfsm_val->features[3]/xfsm_val->num_packets;
-			s64 avg_dev_delta = xfsm_val->features[4]/xfsm_val->num_packets;
-			s64 avg_dev_direction = xfsm_val->features[5]/xfsm_val->num_packets;
+			int64_t avg_dev_total_length = xfsm_val->features[3]/xfsm_val->num_packets;
+			int64_t avg_dev_delta = xfsm_val->features[4]/xfsm_val->num_packets;
+			int64_t avg_dev_direction = xfsm_val->features[5]/xfsm_val->num_packets;
 
+			#ifndef USERSPACE
 			int zero_index = 0;
 			all_features.update(&zero_index, &sport);
 			int one_index = 0;
@@ -226,24 +261,26 @@ int filter(struct __sk_buff *skb) {
 			all_features.update(&ten_index, &avg_dev_delta);
 			int eleven_index = 0;
 			all_features.update(&eleven_index, &avg_dev_direction);
-
-			// s64 all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
+			#else
+			int64_t all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
+			#endif
 
 			int current_node = 0;
 
+			#ifndef USERSPACE
 			// bpf_trace_printk("eggs\n");
-			for (u64 i = 0; i < MAX_TREE_DEPTH; i++) {
+			for (uint64_t i = 0; i < MAX_TREE_DEPTH; i++) {
 				// bpf_trace_printk("i: %lu\n", i);
-				s64* current_left_child = children_left.lookup(&current_node);
-				s64* current_right_child = children_right.lookup(&current_node);
+				int64_t* current_left_child = children_left.lookup(&current_node);
+				int64_t* current_right_child = children_right.lookup(&current_node);
 
-				s64* current_feature = feature.lookup(&current_node);
-				s64* current_threshold = threshold.lookup(&current_node);
+				int64_t* current_feature = feature.lookup(&current_node);
+				int64_t* current_threshold = threshold.lookup(&current_node);
 
 				if (current_feature == NULL || current_threshold == NULL || current_left_child == NULL || current_right_child == NULL || *current_left_child == TREE_LEAF) {
 					break;
 				} else {
-					s64* real_feature_value = all_features.lookup((int*) current_feature);
+					int64_t* real_feature_value = all_features.lookup((int*) current_feature);
 					if (real_feature_value != NULL) {
 						if (*real_feature_value <= *current_threshold) {
 							current_node = (int) *current_left_child;
@@ -256,25 +293,44 @@ int filter(struct __sk_buff *skb) {
 				}
 			}
 
-			s64* correct_value = value.lookup(&current_node);
+			int64_t* correct_value = value.lookup(&current_node);
 
 			if (correct_value != NULL) {
 				xfsm_val->is_anomaly = (bool) correct_value;
 			}
-		}
 
-		// node = self.nodes
-		// # While node not a leaf
-		// while node.left_child != _TREE_LEAF:
-		// 		# ... and node.right_child != _TREE_LEAF:
-		// 		if X_ndarray[i, node.feature] <= node.threshold:
-		// 				node = &self.nodes[node.left_child]
-		// 		else:
-		// 				node = &self.nodes[node.right_child]
+			#else
+			for (uint64_t i = 0; i < MAX_TREE_DEPTH; i++) {
+				// bpf_trace_printk("i: %lu\n", i);
+				int64_t current_left_child = actual_struct->children_left[current_node];
+				int64_t current_right_child = actual_struct->children_right[current_node];
+
+				int64_t current_feature = actual_struct->feature[current_node];
+				int64_t current_threshold = actual_struct->threshold[current_node];
+
+				if (current_left_child == TREE_LEAF) {
+					break;
+				} else {
+					int64_t real_feature_value = all_features[current_feature];
+					if (real_feature_value <= current_threshold) {
+						current_node = (int) current_left_child;
+					} else {
+						current_node = (int) current_right_child;
+					}
+				}
+			}
+
+			int64_t correct_value = actual_struct->value[current_node];
+			xfsm_val->is_anomaly = (bool) correct_value;
+
+			#endif
+
+		}
 
 		return TC_CLS_NOMATCH;
 	}
 
 EOP:
+	cout << "EOP" << endl << flush;
 	return TC_CLS_NOMATCH;
 }
