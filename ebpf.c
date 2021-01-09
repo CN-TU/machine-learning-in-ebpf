@@ -44,7 +44,7 @@ static unsigned long get_nsecs(void)
 	return -1 -> KEEP the packet and return it to user space (userspace can read it from the socket_fd )
 */
 #ifdef USERSPACE
-int filter(void* skb, struct shared_struct* actual_struct) {
+int filter(uint8_t* skb, struct shared_struct* actual_struct) {
 #else
 int filter(struct __sk_buff *skb) {
 #endif
@@ -53,7 +53,7 @@ int filter(struct __sk_buff *skb) {
 	uint64_t ts = bpf_ktime_get_ns();
 	#else
 	uint64_t ts = get_nsecs();
-	cout << "survived get_nsecs" << endl << flush;
+	// cout << "survived get_nsecs" << endl << flush;
 	#endif
 	int zero = 0;
 
@@ -64,11 +64,15 @@ int filter(struct __sk_buff *skb) {
 	}
 	#else
 	actual_struct->num_processed += 1;
-	cout << "survived actual_struct->num_processed" << endl << flush;
+	// cout << "survived actual_struct->num_processed" << endl << flush;
 	#endif
 
+	#ifndef USERSPACE
 	uint8_t *cursor = 0;
-	// int current_state;
+	#else
+	uint8_t *cursor = skb;
+	#endif
+
 
 	/* Initialize most fields to 0 in case we do not parse associated headers.
 	 * The alternative is to set it to 0 once we know we will not meet the header
@@ -99,11 +103,12 @@ int filter(struct __sk_buff *skb) {
 	/* Headers parsing */
 
 	ethernet: {
-		cout << "ethernet" << endl << flush;
 		ethernet = cursor_advance(cursor, sizeof(*ethernet));
-		// state_idx.ether_type = ethernet->type;
 
-		cout << "after ethernet, ethernet->type " << ethernet->type << endl << flush;
+		#ifdef USERSPACE
+		// cout << "ethernet" << endl << flush;
+		ethernet->type = ntohs(ethernet->type);
+		#endif
 
 		switch (ethernet->type) {
 			case ETH_P_IP:   goto ip;
@@ -113,10 +118,14 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	ip: {
-		cout << "ip" << endl << flush;
 		ip = cursor_advance(cursor, sizeof(*ip));
-		// state_idx.ip_src = ip->src;
-		// state_idx.ip_dst = ip->dst;
+
+		#ifdef USERSPACE
+		// cout << "ip" << endl << flush;
+		ip->src = ntohl(ip->src);
+		ip->dst = ntohl(ip->dst);
+		ip->tlen = ntohs(ip->tlen);
+		#endif
 
 		xfsm_idx.ip_src = ip->src;
 		xfsm_idx.ip_dst = ip->dst;
@@ -130,21 +139,24 @@ int filter(struct __sk_buff *skb) {
 	}
 
 	arp: {
-		cout << "arp" << endl << flush;
 		/* We could parse ARP packet here if we needed to retrieve some fields from
 		 * the ARP header for the lookup.
 		 */
-		goto xfsmlookup;
+		goto EOP;
 	}
 
 	l4: {
-		cout << "l4" << endl << flush;
 		l4 = cursor_advance(cursor, sizeof(*l4));
+		#ifdef USERSPACE
+		// cout << "l4" << endl << flush;
+		l4->sport = ntohs(l4->sport);
+		l4->dport = ntohs(l4->dport);
+		#endif
 		goto xfsmlookup;
 	}
 
 	xfsmlookup: {
-		cout << "xfsmlookup" << endl << flush;
+		// cout << "xfsmlookup" << endl << flush;
 		xfsm_idx.l4_proto = ip->nextp;
 		xfsm_idx.src_port = l4->sport;
 		xfsm_idx.dst_port = l4->dport;
@@ -160,12 +172,11 @@ int filter(struct __sk_buff *skb) {
 		xfsm_idx.__padding16 = 0;
 
 		// bpf_trace_printk("Received packet with length %u from port %u to port %u\n", ip->tlen, (uint32_t) l4->sport, (uint32_t) l4->dport);
+		// printf("Received packet with length %u from port %u to port %u\n", ip->tlen, (uint32_t) l4->sport, (uint32_t) l4->dport);
 
 		#ifdef USERSPACE
-		cout << "before lookup" << endl << flush;
 		struct XFSMTableLeaf *xfsm_val = NULL;
 		bool ret = hashmap__find(actual_struct->xfsm_table, &xfsm_idx, &xfsm_val);
-		cout << "survived lookup" << endl << flush;
 		#else
 		struct XFSMTableLeaf *xfsm_val = xfsm_table.lookup(&xfsm_idx);
 		#endif
@@ -180,7 +191,7 @@ int filter(struct __sk_buff *skb) {
 			xfsm_table.insert(&xfsm_idx, &zero);
 			xfsm_val = xfsm_table.lookup(&xfsm_idx);
 			#else
-			cout << "before allocation" << endl << flush;
+			// cout << "before allocation" << endl << flush;
 			XFSMTableKey* xfsm_key_allocated = (XFSMTableKey*) calloc(1, sizeof(XFSMTableKey));
 			*xfsm_key_allocated = xfsm_idx;
 			XFSMTableLeaf* zero = (XFSMTableLeaf*) calloc(1, sizeof(XFSMTableLeaf));
@@ -191,7 +202,7 @@ int filter(struct __sk_buff *skb) {
 			int err = hashmap__add(actual_struct->xfsm_table, xfsm_key_allocated, zero);
 			assert(err==0);
 			bool ret = hashmap__find(actual_struct->xfsm_table, xfsm_key_allocated, &xfsm_val);
-			cout << "after allocation" << endl << flush;
+			// cout << "after allocation" << endl << flush;
 			#endif
 		}
 
@@ -199,6 +210,7 @@ int filter(struct __sk_buff *skb) {
 			xfsm_val->num_packets += 1;
 
 			// bpf_trace_printk("Received %lu packets from port %u to port %u\n", xfsm_val->num_packets, (uint32_t) l4->sport, (uint32_t) l4->dport);
+			// printf("Received %lu packets from port %u to port %u\n", xfsm_val->num_packets, (uint32_t) l4->sport, (uint32_t) l4->dport);
 
 			int64_t sport = xfsm_val->actual_src_port;
 			int64_t dport = xfsm_val->actual_dst_port;
@@ -322,15 +334,13 @@ int filter(struct __sk_buff *skb) {
 
 			int64_t correct_value = actual_struct->value[current_node];
 			xfsm_val->is_anomaly = (bool) correct_value;
-
 			#endif
-
 		}
 
 		return TC_CLS_NOMATCH;
 	}
 
 EOP:
-	cout << "EOP" << endl << flush;
+	// cout << "EOP" << endl << flush;
 	return TC_CLS_NOMATCH;
 }

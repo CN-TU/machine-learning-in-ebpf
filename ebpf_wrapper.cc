@@ -173,7 +173,6 @@ int main(int argc, char *argv[])
 		assert(res.code() == 0);
 	}
 
-
   int fd;
   res = bpf.load_func("filter", BPF_PROG_TYPE_SOCKET_FILTER, fd);
   assert(res.code() == 0);
@@ -186,6 +185,7 @@ int main(int argc, char *argv[])
 	assert(ret>=0);
 
 	auto current_time = std::chrono::system_clock::now();
+	starttime = std::chrono::system_clock::now();
 
 	std::this_thread::sleep_for(std::chrono::duration<double>(time_to_run) - (current_time - starttime));
 
@@ -193,6 +193,8 @@ int main(int argc, char *argv[])
 	uint64_t actual_num_processed;
 	res = num_processed_table.get_value(0, actual_num_processed);
 	assert(res.code() == 0);
+
+	cout << "Finished kernel" << endl << flush;
 
 	#else
 
@@ -206,26 +208,27 @@ int main(int argc, char *argv[])
 	set_blocking_mode(sd);
 
 	auto duration = std::chrono::duration<double>(time_to_run);
+	starttime = std::chrono::system_clock::now();
 
-	cout << "Initialized everything" << endl << flush;
+	// cout << "Initialized everything" << endl << flush;
 	while(true) {
 		int length = 0; /*length of the received frame*/
 
 		length = recv(sd, buffer, 65536, 0);
 		if (length == -1) { perror("recv"); }
 
-		cout << "before" << endl << flush;
+		// cout << "before" << endl << flush;
 		filter(buffer, &ss);
-		cout << "after" << endl << flush;
+		// cout << "after" << endl << flush;
 
 		auto current_time = std::chrono::system_clock::now();
-		cout << "duration " << duration.count() << " difference " << (current_time - starttime).count()/1000000000 << endl << flush;
-		if(duration < (current_time - starttime)/1000000000) {
-			cout << "Breaking" << endl << flush;
+		// cout << "duration " << duration.count() << " difference " << ((double) (current_time - starttime).count())/1000000000 << endl << flush;
+		if(duration.count() < ((double) (current_time - starttime).count())/1000000000) {
+			// cout << "Breaking" << endl << flush;
 			break;
 		}
 	}
-	cout << "Finished loop" << endl << flush;
+	cout << "Finished userspace" << endl << flush;
 
 	uint64_t actual_num_processed = ss.num_processed;
 

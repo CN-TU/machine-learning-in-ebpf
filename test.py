@@ -90,15 +90,15 @@ def run(vnet, prefix=""):
 
 		vnet.update_hosts()
 
-		for interface in switch.interfaces:
-			print("interface", interface)
+		# for interface in switch.interfaces:
+		# 	print("interface", interface)
 
-			run_commands([f"tc qdisc add dev {interface} root handle 1: netem{f' delay {int(round(opt.delay/2))}ms'}", f"tc qdisc add dev {interface} parent 1: handle 2: htb default 21", f"tc class add dev {interface} parent 2: classid 2:21 htb rate {opt.rate if interface=='host10' else 100}mbit", f"tc qdisc add dev {interface} parent 2:21 handle 3: {opt.qdisc if interface=='host10' else 'fq'}{f' flow_limit {int(math.ceil(opt.buffer_size))}' if (interface=='host10' and opt.qdisc=='fq') else ''}{f' limit {int(math.ceil(opt.buffer_size))}' if (interface=='host10' and opt.qdisc=='pfifo') else ''}"])
+		# 	run_commands([f"tc qdisc add dev {interface} root handle 1: netem{f' delay {int(round(opt.delay/2))}ms'}", f"tc qdisc add dev {interface} parent 1: handle 2: htb default 21", f"tc class add dev {interface} parent 2: classid 2:21 htb rate {opt.rate if interface=='host10' else 100}mbit", f"tc qdisc add dev {interface} parent 2:21 handle 3: {opt.qdisc if interface=='host10' else 'fq'}{f' flow_limit {int(math.ceil(opt.buffer_size))}' if (interface=='host10' and opt.qdisc=='fq') else ''}{f' limit {int(math.ceil(opt.buffer_size))}' if (interface=='host10' and opt.qdisc=='pfifo') else ''}"])
 
-		for i in range(len(hosts)):
-			with hosts[i].Popen("tc qdisc show dev eth0".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) as qdisc_info:
-				qdisc_info_output = qdisc_info.stdout.read().decode("utf-8").split("\n")
-				print(f"qdisc_info_output host {i}", qdisc_info_output)
+		# for i in range(len(hosts)):
+		# 	with hosts[i].Popen("tc qdisc show dev eth0".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) as qdisc_info:
+		# 		qdisc_info_output = qdisc_info.stdout.read().decode("utf-8").split("\n")
+		# 		print(f"qdisc_info_output host {i}", qdisc_info_output)
 
 		with hosts[0].Popen("ping -c 100 -i 0 host1".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) as ping:
 			ping_output = ping.stdout.read().decode("utf-8").split("\n")
@@ -109,7 +109,7 @@ def run(vnet, prefix=""):
 
 		server_popen = hosts[1].Popen("iperf3 -V -4 -s".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		# ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time-5}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		# ebpf_popen = hosts[1].Popen(f"python3 ebpf_wrapper.py {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 		os.environ["file_name_for_logging"] = f"pcaps/{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.txt"
@@ -123,7 +123,7 @@ def run(vnet, prefix=""):
 
 		client_popen = hosts[0].Popen(f"iperf3 -V -4 -t {opt.time} --cport {opt.cport} -c host1".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		ebpf_popen = hosts[1].Popen(["bash","-c",f"./ebpf_wrapper {opt.time-1}"])
+		# ebpf_popen = hosts[1].Popen(["bash","-c",f"./ebpf_wrapper {opt.time-1}"])
 
 		time.sleep(opt.time)
 
@@ -175,7 +175,7 @@ if opt.run_scenario == "":
 	with virtnet.Manager() as context:
 		run(context)
 elif opt.run_scenario == "just_one_flow":
-	opt.time = 10
+	opt.time = 20
 	opt.store_pcaps = False
 	opt.buffer_size = 100
 	opt.rate = 10
