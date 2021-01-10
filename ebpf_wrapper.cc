@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
 	starttime = std::chrono::system_clock::now();
 
 	// cout << "Initialized everything" << endl << flush;
-	while(true) {
+	for(size_t i=0;;i++) {
 		int length = 0; /*length of the received frame*/
 
 		length = recv(sd, buffer, 65536, 0);
@@ -221,11 +221,13 @@ int main(int argc, char *argv[])
 		filter(buffer, &ss);
 		// cout << "after" << endl << flush;
 
-		auto current_time = std::chrono::system_clock::now();
-		// cout << "duration " << duration.count() << " difference " << ((double) (current_time - starttime).count())/1000000000 << endl << flush;
-		if(duration.count() < ((double) (current_time - starttime).count())/1000000000) {
-			// cout << "Breaking" << endl << flush;
-			break;
+		if (i % 1000 == 0) {
+			auto current_time = std::chrono::system_clock::now();
+			// cout << "duration " << duration.count() << " difference " << ((double) (current_time - starttime).count())/1000000000 << endl << flush;
+			if(duration.count() < ((double) (current_time - starttime).count())/1000000000) {
+				// cout << "Breaking" << endl << flush;
+				break;
+			}
 		}
 	}
 	cout << "Finished userspace" << endl << flush;

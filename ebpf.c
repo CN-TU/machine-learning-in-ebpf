@@ -251,27 +251,27 @@ int filter(struct __sk_buff *skb) {
 			#ifndef USERSPACE
 			int zero_index = 0;
 			all_features.update(&zero_index, &sport);
-			int one_index = 0;
+			int one_index = 1;
 			all_features.update(&one_index, &dport);
-			int two_index = 0;
+			int two_index = 2;
 			all_features.update(&two_index, &protocol_identifier);
-			int three_index = 0;
+			int three_index = 3;
 			all_features.update(&three_index, &total_length);
-			int four_index = 0;
+			int four_index = 4;
 			all_features.update(&four_index, &delta);
-			int five_index = 0;
+			int five_index = 5;
 			all_features.update(&five_index, &direction);
-			int six_index = 0;
+			int six_index = 6;
 			all_features.update(&six_index, &avg_total_length);
-			int seven_index = 0;
+			int seven_index = 7;
 			all_features.update(&seven_index, &avg_delta);
-			int eight_index = 0;
+			int eight_index = 8;
 			all_features.update(&eight_index, &avg_direction);
-			int nine_index = 0;
+			int nine_index = 9;
 			all_features.update(&nine_index, &avg_dev_total_length);
-			int ten_index = 0;
+			int ten_index = 10;
 			all_features.update(&ten_index, &avg_dev_delta);
-			int eleven_index = 0;
+			int eleven_index = 11;
 			all_features.update(&eleven_index, &avg_dev_direction);
 			#else
 			int64_t all_features[12] = {sport, dport, protocol_identifier, total_length, delta, direction, avg_total_length, avg_delta, avg_direction, avg_dev_total_length, avg_dev_delta, avg_dev_direction};
