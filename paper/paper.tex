@@ -1,0 +1,125 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%%
+%% IMPORTANT NOTICE:
+%%
+%% For the copyright see the source file.
+%%
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%%
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%%
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%% The first command in your LaTeX source must be the \documentclass command.
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[inline]{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[pdfauthor={Maximilian Bachl, Joachim Fabini, Tanja Zseby}]{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[numbers]{natbib}
+\usepackage{subfig}
+\usepackage{tikz}
+
+\usepackage[nomain, toc, acronym]{glossaries}
+\glsdisablehyper
+
+\newcommand\note[2]{{\color{#1}#2}}
+\newcommand\todo[1]{{\note{red}{TODO: #1}}}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{A flow-based IDS using Machine Learning in eBPF}
+
+\author{\IEEEauthorblockN{Maximilian Bachl, Joachim Fabini, Tanja Zseby}
+\IEEEauthorblockA{Technische Universität Wien\\
+firstname.lastname@tuwien.ac.at}}
+
+%\date{\today}
+
+% \IEEEoverridecommandlockouts
+% \IEEEpubid{\begin{minipage}[t]{\textwidth}\ \\[10pt]
+%         \centering\normalsize{xxx-x-xxxx-xxxx-x/xx/\$31.00 \copyright 2018 IEEE}
+% \end{minipage}}
+
+% \renewcommand*{\bibfont}{\footnotesize}
+
+%\newcommand\copyrighttext{%
+%  \footnotesize \textcopyright 2020 IEEE. Personal use of this material is permitted.
+%  Permission from IEEE must be obtained for all other uses, in any current or future
+%  media, including reprinting/republishing this material for advertising or promotional
+%  purposes, creating new collective works, for resale or redistribution to servers or
+%  lists, or reuse of any copyrighted component of this work in other works.}
+%\newcommand\copyrightnotice{%
+%\begin{tikzpicture}[remember picture,overlay]
+%\node[anchor=south,yshift=10pt] at (current page.south) {\fbox{\parbox{\dimexpr\textwidth-\fboxsep-\fboxrule\relax}{\copyrighttext}}};
+%\end{tikzpicture}%
+%}
+
+\maketitle%
+%\copyrightnotice
+
+% \thispagestyle{plain}
+% \pagestyle{plain}
+
+\newacronym{ml}{ML}{Machine Learning}
+\newacronym{dl}{DL}{Deep Learning}
+\newacronym{ids}{IDS}{Intrusion Detection System}
+\newacronym{rnn}{RNN}{Recurrent Neural Network}
+\newacronym{dos}{DoS}{Denial-of-Service}
+\newacronym{iat}{IAT}{Interarrival time}
+
+\begin{abstract}
+
+Spam and eggs.
+
+\end{abstract}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+%\begin{abstract}
+%  A clear and well-documented \LaTeX\ document is presented as an
+%  article formatted for publication by ACM in a conference proceedings
+%  or journal publication. Based on the ``acmart'' document class, this
+%  article presents and explains many of the common variations, as well
+%  as many of the formatting elements an author may use in the
+%  preparation of the documentation of their work.
+%\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+
+%\section*{Acknowledgements}
+%The Titan Xp used for this research was donated by the NVIDIA Corporation.
+
+\renewcommand*{\bibfont}{\small}
+\bibliographystyle{ieeetr}
+\bibliography{bibliography}
+
+
+\end{document}
+\endinput

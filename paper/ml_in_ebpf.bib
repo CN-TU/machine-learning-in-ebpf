@@ -1,0 +1,676 @@
+
+@article{radford_network_2018,
+	title = {Network {Traffic} {Anomaly} {Detection} {Using} {Recurrent} {Neural} {Networks}},
+	abstract = {We show that a recurrent neural network is able to learn a model to represent sequences of communications between computers on a network and can be used to identify outlier network traffic. Defending computer networks is a challenging problem and is typically addressed by manually identifying known malicious actor behavior and then specifying rules to recognize such behavior in network communications. However, these rule-based approaches often generalize poorly and identify only those patterns that are already known to researchers. An alternative approach that does not rely on known malicious behavior patterns can potentially also detect previously unseen patterns. We tokenize and compress netflow into sequences of "words" that form "sentences" representative of a conversation between computers. These sentences are then used to generate a model that learns the semantic and syntactic grammar of the newly generated language. We use Long-Short-Term Memory (LSTM) cell Recurrent Neural Networks (RNN) to capture the complex relationships and nuances of this language. The language model is then used predict the communications between two IPs and the prediction error is used as a measurement of how typical or atyptical the observed communication are. By learning a model that is specific to each network, yet generalized to typical computer-to-computer traffic within and outside the network, a language model is able to identify sequences of network activity that are outliers with respect to the model. We demonstrate positive unsupervised attack identification performance (AUC 0.84) on the ISCX IDS dataset which contains seven days of network activity with normal traffic and four distinct attack patterns.},
+	urldate = {2019-07-30},
+	journal = {arXiv:1803.10769},
+	author = {Radford, Benjamin J. and Apolonio, Leonardo M. and Trias, Antonio J. and Simpson, Jim A.},
+	month = mar,
+	year = {2018},
+	keywords = {Computer Science - Computers and Society, Computer Science - Human-Computer Interaction, Computer Science - Machine Learning},
+	annote = {Comment: Prepared for the 2017 National Symposium on Sensor and Data Fusion},
+	annote = {Comment: Prepared for the 2017 National Symposium on Sensor and Data Fusion}
+}
+
+@article{meghdouri_analysis_2018,
+	title = {Analysis of {Lightweight} {Feature} {Vectors} for {Attack} {Detection} in {Network} {Traffic}},
+	volume = {8},
+	copyright = {http://creativecommons.org/licenses/by/3.0/},
+	abstract = {The consolidation of encryption and big data in network communications have made deep packet inspection no longer feasible in large networks. Early attack detection requires feature vectors which are easy to extract, process, and analyze, allowing their generation also from encrypted traffic. So far, experts have selected features based on their intuition, previous research, or acritically assuming standards, but there is no general agreement about the features to use for attack detection in a broad scope. We compared five lightweight feature sets that have been proposed in the scientific literature for the last few years, and evaluated them with supervised machine learning. For our experiments, we use the UNSW-NB15 dataset, recently published as a new benchmark for network security. Results showed three remarkable findings: (1) Analysis based on source behavior instead of classic flow profiles is more effective for attack detection; (2) meta-studies on past research can be used to establish satisfactory benchmarks; and (3) features based on packet length are clearly determinant for capturing malicious activity. Our research showed that vectors currently used for attack detection are oversized, their accuracy and speed can be improved, and are to be adapted for dealing with encrypted traffic.},
+	language = {en},
+	number = {11},
+	urldate = {2019-07-30},
+	journal = {Applied Sciences},
+	author = {Meghdouri, Fares and Zseby, Tanja and Iglesias, Félix},
+	month = nov,
+	year = {2018},
+	keywords = {feature selection, network attack detection, supervised learning},
+	pages = {2196}
+}
+
+@article{liu_fine-pruning:_2018,
+	title = {Fine-{Pruning}: {Defending} {Against} {Backdooring} {Attacks} on {Deep} {Neural} {Networks}},
+	shorttitle = {Fine-{Pruning}},
+	abstract = {Deep neural networks (DNNs) provide excellent performance across a wide range of classification tasks, but their training requires high computational resources and is often outsourced to third parties. Recent work has shown that outsourced training introduces the risk that a malicious trainer will return a backdoored DNN that behaves normally on most inputs but causes targeted misclassifications or degrades the accuracy of the network when a trigger known only to the attacker is present. In this paper, we provide the first effective defenses against backdoor attacks on DNNs. We implement three backdoor attacks from prior work and use them to investigate two promising defenses, pruning and fine-tuning. We show that neither, by itself, is sufficient to defend against sophisticated attackers. We then evaluate fine-pruning, a combination of pruning and fine-tuning, and show that it successfully weakens or even eliminates the backdoors, i.e., in some cases reducing the attack success rate to 0\% with only a 0.4\% drop in accuracy for clean (non-triggering) inputs. Our work provides the first step toward defenses against backdoor attacks in deep neural networks.},
+	urldate = {2019-08-20},
+	journal = {arXiv:1805.12185},
+	author = {Liu, Kang and Dolan-Gavitt, Brendan and Garg, Siddharth},
+	month = may,
+	year = {2018},
+	keywords = {Computer Science - Cryptography and Security, Computer Science - Machine Learning}
+}
+
+@article{gu_badnets:_2017,
+	title = {{BadNets}: {Identifying} {Vulnerabilities} in the {Machine} {Learning} {Model} {Supply} {Chain}},
+	shorttitle = {{BadNets}},
+	abstract = {Deep learning-based techniques have achieved state-of-the-art performance on a wide variety of recognition and classification tasks. However, these networks are typically computationally expensive to train, requiring weeks of computation on many GPUs; as a result, many users outsource the training procedure to the cloud or rely on pre-trained models that are then fine-tuned for a specific task. In this paper we show that outsourced training introduces new security risks: an adversary can create a maliciously trained network (a backdoored neural network, or a {\textbackslash}emph\{BadNet\}) that has state-of-the-art performance on the user's training and validation samples, but behaves badly on specific attacker-chosen inputs. We first explore the properties of BadNets in a toy example, by creating a backdoored handwritten digit classifier. Next, we demonstrate backdoors in a more realistic scenario by creating a U.S. street sign classifier that identifies stop signs as speed limits when a special sticker is added to the stop sign; we then show in addition that the backdoor in our US street sign detector can persist even if the network is later retrained for another task and cause a drop in accuracy of \{25\}{\textbackslash}\% on average when the backdoor trigger is present. These results demonstrate that backdoors in neural networks are both powerful and---because the behavior of neural networks is difficult to explicate---stealthy. This work provides motivation for further research into techniques for verifying and inspecting neural networks, just as we have developed tools for verifying and debugging software.},
+	urldate = {2019-08-20},
+	journal = {arXiv:1708.06733},
+	author = {Gu, Tianyu and Dolan-Gavitt, Brendan and Garg, Siddharth},
+	month = aug,
+	year = {2017},
+	keywords = {Computer Science - Cryptography and Security, Computer Science - Machine Learning}
+}
+
+@article{wang_neural_2019,
+	title = {Neural {Cleanse}: {Identifying} and {Mitigating} {Backdoor} {Attacks} in {Neural} {Networks}},
+	abstract = {Lack of transparency in deep neural networks (DNNs) make them susceptible to backdoor attacks, where hidden associations or triggers override normal classiﬁcation to produce unexpected results. For example, a model with a backdoor always identiﬁes a face as Bill Gates if a speciﬁc symbol is present in the input. Backdoors can stay hidden indeﬁnitely until activated by an input, and present a serious security risk to many security or safety related applications, e.g., biometric authentication systems or self-driving cars.},
+	language = {en},
+	author = {Wang, Bolun and Yao, Yuanshun and Shan, Shawn and Li, Huiying and Viswanath, Bimal and Zheng, Haitao and Zhao, Ben Y},
+	year = {2019},
+	pages = {17}
+}
+
+@article{liu_trojaning_2017,
+	title = {Trojaning {Attack} on {Neural} {Networks}},
+	abstract = {With the fast spread of machine learning techniques, sharing and adopting public machine learning models become very popular. This gives attackers many new opportunities. In this paper, we propose a trojaning attack on neuron networks. As the models are not intuitive for human to understand, the attack features stealthiness. Deploying trojaned models can cause various severe consequences including endangering human lives (in applications like auto driving). We first inverse the neuron network to generate a general trojan trigger, and then retrain the model with external datasets to inject malicious behaviors to the model. The malicious behaviors are only activated by inputs stamped with the trojan trigger. In our attack, we do not need to tamper with the original training process, which usually takes weeks to months. Instead, it takes minutes to hours to apply our attack. Also, we do not require the datasets that are used to train the model. In practice, the datasets are usually not shared due to privacy or copyright concerns. We use five different applications to demonstrate the power of our attack, and perform a deep analysis on the possible factors that affect the attack. The results show that our attack is highly effective and efficient. The trojaned behaviors can be successfully triggered (with nearly 100\% possibility) without affecting its test accuracy for normal input data. Also, it only takes a small amount of time to attack a complex neuron network model. In the end, we also discuss possible defense against such attacks.},
+	language = {en},
+	author = {Liu, Yingqi and Ma, Shiqing and Aafer, Yousra},
+	year = {2017},
+	pages = {17}
+}
+
+@inproceedings{biggio_bagging_2011,
+	address = {Naples, Italy},
+	title = {Bagging classifiers for fighting poisoning attacks in adversarial environments},
+	abstract = {Abstract. Pattern recognition systems have been widely used in ad-versarial classification tasks like spam filtering and intrusion detection in computer networks. In these applications a malicious adversary may successfully mislead a classifier by “poisoning ” its training data with carefully designed attacks. Bagging is a well-known ensemble construc-tion method, where each classifier in the ensemble is trained on a different bootstrap replicate of the training set. Recent work has shown that bag-ging can reduce the influence of outliers in training data, especially if the most outlying observations are resampled with a lower probability. In this work we argue that poisoning attacks can be viewed as a particu-lar category of outliers, and, thus, bagging ensembles may be effectively exploited against them. We experimentally assess the effectiveness of bagging on a real, widely used spam filter, and on a web-based intrusion detection system. Our preliminary results suggest that bagging ensem-bles can be a very promising defence strategy against poisoning attacks, and give us valuable insights for future research work. 1},
+	booktitle = {10th {Int}’l {Workshop} on {Multiple} {Classifier} {Systems}, volume 6713 of {LNCS}},
+	publisher = {Springer},
+	author = {Biggio, Battista and Corona, Igino and Fumera, Giorgio and Giacinto, Giorgio and Roli, Fabio},
+	year = {2011},
+	pages = {350--359}
+}
+
+@inproceedings{moustafa_unsw-nb15:_2015,
+	title = {{UNSW}-{NB}15: a comprehensive data set for network intrusion detection systems ({UNSW}-{NB}15 network data set)},
+	shorttitle = {{UNSW}-{NB}15},
+	abstract = {One of the major research challenges in this field is the unavailability of a comprehensive network based data set which can reflect modern network traffic scenarios, vast varieties of low footprint intrusions and depth structured information about the network traffic. Evaluating network intrusion detection systems research efforts, KDD98, KDDCUP99 and NSLKDD benchmark data sets were generated a decade ago. However, numerous current studies showed that for the current network threat environment, these data sets do not inclusively reflect network traffic and modern low footprint attacks. Countering the unavailability of network benchmark data set challenges, this paper examines a UNSW-NB15 data set creation. This data set has a hybrid of the real modern normal and the contemporary synthesized attack activities of the network traffic. Existing and novel methods are utilised to generate the features of the UNSWNB15 data set. This data set is available for research purposes and can be accessed from the link.},
+	booktitle = {{MilCIS}},
+	author = {Moustafa, Nour and Slay, Jill},
+	month = nov,
+	year = {2015},
+	keywords = {telecommunication traffic, Feature extraction, computer network security, IP networks, Servers, Benchmark testing, Data models, low footprint attacks, network intrusion detection systems, network traffic, NIDS, pcap files, Telecommunication traffic, testbed, Training, UNSW-NB15 data set, UNSW-NB15 network data set},
+	pages = {1--6}
+}
+
+@article{williams_preliminary_2006,
+	title = {A {Preliminary} {Performance} {Comparison} of {Five} {Machine} {Learning} {Algorithms} for {Practical} {IP} {Traffic} {Flow} {Classification}},
+	volume = {36},
+	abstract = {Loading...},
+	number = {5},
+	urldate = {2019-09-08},
+	journal = {SIGCOMM Comput. Commun. Rev.},
+	author = {Williams, Nigel and Zander, Sebastian and Armitage, Grenville},
+	month = oct,
+	year = {2006},
+	keywords = {machine learning, traffic classification},
+	pages = {5--16}
+}
+
+@article{friedman_greedy_2001,
+	title = {Greedy {Function} {Approximation}: {A} {Gradient} {Boosting} {Machine}},
+	volume = {29},
+	shorttitle = {Greedy {Function} {Approximation}},
+	abstract = {Function estimation/approximation is viewed from the perspective of numerical optimization in function space, rather than parameter space. A connection is made between stagewise additive expansions and steepest-descent minimization. A general gradient descent "boosting" paradigm is developed for additive expansions based on any fitting criterion. Specific algorithms are presented for least-squares, least absolute deviation, and Huber-M loss functions for regression, and multiclass logistic likelihood for classification. Special enhancements are derived for the particular case where the individual additive components are regression trees, and tools for interpreting such "TreeBoost" models are presented. Gradient boosting of regression trees produces competitive, highly robust, interpretable procedures for both regression and classification, especially appropriate for mining less than clean data. Connections between this approach and the boosting methods of Freund and Shapire and Friedman, Hastie and Tibshirani are discussed.},
+	number = {5},
+	urldate = {2019-09-08},
+	journal = {The Annals of Statistics},
+	author = {Friedman, Jerome H.},
+	year = {2001},
+	pages = {1189--1232}
+}
+
+@article{gharib_evaluation_2016,
+	title = {An {Evaluation} {Framework} for {Intrusion} {Detection} {Dataset}},
+	abstract = {The growing number of security threats on the Internet and computer networks demands highly reliable security solutions. Meanwhile, Intrusion Detection (IDSs) and Intrusion Prevention Systems (IPSs) have an important role in the design and development of a robust network infrastructure that can defend computer networks by detecting and blocking a variety of attacks. Reliable benchmark datasets are critical to test and evaluate the performance of a detection system. There exist a number of such datasets, for example, DARPA98, KDD99, ISC2012, and ADFA13 that have been used by the researchers to evaluate the performance of their intrusion detection and prevention approaches. However, not enough research has focused on the evaluation and assessment of the datasets themselves. In this paper we present a comprehensive evaluation of the existing datasets using our proposed criteria, and propose an evaluation framework for IDS and IPS datasets.},
+	journal = {ICISS},
+	author = {Gharib, Amirhossein and Sharafaldin, Iman and Lashkari, Arash Habibi and Ghorbani, Ali A.},
+	year = {2016},
+	keywords = {Internet, Benchmark (computing), Blocking (computing), Coefficient, computer network, Dental Intrusion, Intrusion detection system, Sensor, Silo (dataset)},
+	pages = {1--6}
+}
+
+@misc{vormayr_go-flows_2019,
+	title = {go-flows},
+	copyright = {LGPL-3.0},
+	url = {https://github.com/CN-TU/go-flows},
+	abstract = {Flow Exporter implementation in go. CN contact: GV},
+	urldate = {2019-09-08},
+	publisher = {CN Group, Institute of Telecommunications, TU Wien},
+	author = {Vormayr, Gernot},
+	month = aug,
+	year = {2019}
+}
+
+@article{esposito_comparative_1997,
+	title = {A comparative analysis of methods for pruning decision trees},
+	volume = {19},
+	abstract = {In this paper, we address the problem of retrospectively pruning decision trees induced from data, according to a top-down approach. This problem has received considerable attention in the areas of pattern recognition and machine learning, and many distinct methods have been proposed in literature. We make a comparative study of six well-known pruning methods with the aim of understanding their theoretical foundations, their computational complexity, and the strengths and weaknesses of their formulation. Comments on the characteristics of each method are empirically supported. In particular, a wide experimentation performed on several data sets leads us to opposite conclusions on the predictive accuracy of simplified trees from some drawn in the literature. We attribute this divergence to differences in experimental designs. Finally, we prove and make use of a property of the reduced error pruning method to obtain an objective evaluation of the tendency to overprune/underprune observed in each method.},
+	number = {5},
+	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+	author = {Esposito, Floriana and Malerba, Donato and Semeraro, Giovanni and Kay, J.},
+	month = may,
+	year = {1997},
+	keywords = {machine learning, Machine learning, Testing, Accuracy, Classification tree analysis, computational complexity, Computational complexity, decision theory, decision tree pruning, Decision trees, Design for experiments, grafting operators, learning systems, Medical diagnosis, optimisation, Pattern recognition, reduced error pruning, Regression tree analysis, top-down induction, trees (mathematics)},
+	pages = {476--491}
+}
+
+@article{karnin_simple_1990,
+	title = {A simple procedure for pruning back-propagation trained neural networks},
+	volume = {1},
+	abstract = {The sensitivity of the global error (cost) function to the inclusion/exclusion of each synapse in the artificial neural network is estimated. Introduced are shadow arrays which keep track of the incremental changes to the synaptic weights during a single pass of back-propagating learning. The synapses are then ordered by decreasing sensitivity numbers so that the network can be efficiently pruned by discarding the last items of the sorted list. Unlike previous approaches, this simple procedure does not require a modification of the cost function, does not interfere with the learning process, and demands a negligible computational overhead.{\textless}{\textgreater}},
+	number = {2},
+	journal = {IEEE Transactions on Neural Networks},
+	author = {Karnin, E. D.},
+	month = jun,
+	year = {1990},
+	keywords = {learning systems, Artificial neural networks, back-propagation, Cities and towns, Computational efficiency, Computer networks, cost function, Cost function, global error, learning process, Learning systems, Logistics, neural nets, neural networks, Neural networks, Neurons, sensitivity, shadow arrays, synaptic weights, Training data},
+	pages = {239--242}
+}
+
+@inproceedings{sietsma_neural_1988,
+	address = {San Diego, CA},
+	title = {Neural net pruning-why and how},
+	booktitle = {Proceedings of the {International} {Conference} on {Neural} {Networks}},
+	publisher = {IEEE},
+	author = {Sietsma, Jocelyn},
+	year = {1988},
+	pages = {325--333}
+}
+
+@inproceedings{chen_robust_2019,
+	address = {Long Beach, CA},
+	title = {Robust {Decision} {Trees} {Against} {Adversarial} {Examples}},
+	abstract = {Although adversarial examples and model robustness have been extensively studied in the context of linear models and neural networks, research on this issue in tree-based models and how to make tree-based models robust against adversarial examples is still limited. In this paper, we show that tree based models are also vulnerable to adversarial examples and develop a novel algorithm to learn robust trees. At its core, our method aims to optimize the performance under the worstcase perturbation of input features, which leads to a max-min saddle point problem. Incorporating this saddle point objective into the decision tree building procedure is non-trivial due to the discrete nature of trees—a naive approach to ﬁnding the best split according to this saddle point objective will take exponential time. To make our approach practical and scalable, we propose efﬁcient tree building algorithms by approximating the inner minimizer in this saddle point problem, and present efﬁcient implementations for classical information gain based trees as well as state-of-the-art tree boosting models such as XGBoost. Experimental results on real world datasets demonstrate that the proposed algorithms can substantially improve the robustness of tree-based models against adversarial examples.},
+	language = {en},
+	booktitle = {Proceedings of the 36th {International} {Conference} on {Machine} {Learning}},
+	publisher = {PMLR},
+	author = {Chen, Hongge and Zhang, Huan and Boning, Duane and Hsieh, Cho-Jui},
+	year = {2019},
+	pages = {1122--1131}
+}
+
+@inproceedings{russu_secure_2016,
+	address = {Vienna, Austria},
+	title = {Secure {Kernel} {Machines} against {Evasion} {Attacks}},
+	isbn = {978-1-4503-4573-6},
+	abstract = {Machine learning is widely used in security-sensitive settings like spam and malware detection, although it has been shown that malicious data can be carefully modiﬁed at test time to evade detection. To overcome this limitation, adversaryaware learning algorithms have been developed, exploiting robust optimization and game-theoretical models to incorporate knowledge of potential adversarial data manipulations into the learning algorithm. Despite these techniques have been shown to be eﬀective in some adversarial learning tasks, their adoption in practice is hindered by diﬀerent factors, including the diﬃculty of meeting speciﬁc theoretical requirements, the complexity of implementation, and scalability issues, in terms of computational time and space required during training. In this work, we aim to develop secure kernel machines against evasion attacks that are not computationally more demanding than their non-secure counterparts. In particular, leveraging recent work on robustness and regularization, we show that the security of a linear classiﬁer can be drastically improved by selecting a proper regularizer, depending on the kind of evasion attack, as well as unbalancing the cost of classiﬁcation errors. We then discuss the security of nonlinear kernel machines, and show that a proper choice of the kernel function is crucial. We also show that unbalancing the cost of classiﬁcation errors and varying some kernel parameters can further improve classiﬁer security, yielding decision functions that better enclose the legitimate data. Our results on spam and PDF malware detection corroborate our analysis.},
+	language = {en},
+	urldate = {2019-09-09},
+	booktitle = {Proceedings of the 2016 {ACM} {Workshop} on {Artificial} {Intelligence} and {Security} - {ALSec} '16},
+	publisher = {ACM Press},
+	author = {Russu, Paolo and Demontis, Ambra and Biggio, Battista and Fumera, Giorgio and Roli, Fabio},
+	year = {2016},
+	pages = {59--69}
+}
+
+@incollection{yosinski_how_2014,
+	title = {How transferable are features in deep neural networks?},
+	urldate = {2019-09-09},
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 27},
+	publisher = {MIT Press},
+	author = {Yosinski, Jason and Clune, Jeff and Bengio, Yoshua and Lipson, Hod},
+	year = {2014},
+	pages = {3320--3328}
+}
+
+@inproceedings{sharafaldin_toward_2018,
+	address = {Funchal, Madeira, Portugal},
+	title = {Toward {Generating} a {New} {Intrusion} {Detection} {Dataset} and {Intrusion} {Traffic} {Characterization}},
+	shorttitle = {Toward {Generating} a {New} {Intrusion} {Detection} {Dataset} and {Intrusion} {Traffic} {Characterization}},
+	abstract = {Intrusion Detection, IDS Dataset, DoS, Web Attack, Inﬁltration, Brute Force.},
+	language = {en},
+	urldate = {2019-09-10},
+	booktitle = {{ICISSP}},
+	publisher = {SCITEPRESS},
+	author = {Sharafaldin, Iman and Habibi Lashkari, Arash and Ghorbani, Ali A.},
+	year = {2018},
+	pages = {108--116}
+}
+
+@article{apley_visualizing_2016,
+	title = {Visualizing the {Effects} of {Predictor} {Variables} in {Black} {Box} {Supervised} {Learning} {Models}},
+	abstract = {When fitting black box supervised learning models (e.g., complex trees, neural networks, boosted trees, random forests, nearest neighbors, local kernel-weighted methods, etc.), visualizing the main effects of the individual predictor variables and their low-order interaction effects is often important, and partial dependence (PD) plots are the most popular approach for accomplishing this. However, PD plots involve a serious pitfall if the predictor variables are far from independent, which is quite common with large observational data sets. Namely, PD plots require extrapolation of the response at predictor values that are far outside the multivariate envelope of the training data, which can render the PD plots unreliable. Although marginal plots (M plots) do not require such extrapolation, they produce substantially biased and misleading results when the predictors are dependent, analogous to the omitted variable bias in regression. We present a new visualization approach that we term accumulated local effects (ALE) plots, which inherits the desirable characteristics of PD and M plots, without inheriting their preceding shortcomings. Like M plots, ALE plots do not require extrapolation; and like PD plots, they are not biased by the omitted variable phenomenon. Moreover, ALE plots are far less computationally expensive than PD plots.},
+	urldate = {2019-09-13},
+	journal = {arXiv:1612.08468},
+	author = {Apley, Daniel W. and Zhu, Jingyu},
+	month = dec,
+	year = {2016},
+	keywords = {Statistics - Methodology},
+	annote = {Comment: The R package ALEPlot is available on CRAN. The new version contains refined definitions of ALE effects, a new illustrative example, theorems and proofs of asymptotic properties of ALE effects and estimators, and extra implementation details}
+}
+
+@misc{wikipedia_convolutional_2019,
+	title = {Convolutional neural network},
+	copyright = {Creative Commons Attribution-ShareAlike License},
+	url = {https://en.wikipedia.org/w/index.php?title=Convolutional_neural_network&oldid=921208341},
+	abstract = {In deep learning, a convolutional neural network (CNN, or ConvNet) is a class of deep neural networks, most commonly applied to analyzing visual imagery.
+CNNs are regularized versions of multilayer perceptrons. Multilayer perceptrons usually mean fully connected networks, that is, each neuron in one layer is connected to all neurons in the next layer. The "fully-connectedness" of these networks makes them prone to overfitting data. Typical ways of regularization include adding some form of magnitude measurement of weights to the loss function. However, CNNs take a different approach towards regularization: they take advantage of the hierarchical pattern in data and assemble more complex patterns using smaller and simpler patterns. Therefore, on the scale of connectedness and complexity, CNNs are on the lower extreme.
+They are also known as shift invariant or space invariant artificial neural networks (SIANN), based on their shared-weights architecture and translation invariance characteristics.Convolutional networks were inspired by biological processes in that the connectivity pattern between neurons resembles the organization of the animal visual cortex. Individual cortical neurons respond to stimuli only in a restricted region of the visual field known as the receptive field. The receptive fields of different neurons partially overlap such that they cover the entire visual field.
+CNNs use relatively little pre-processing compared to other image classification algorithms. This means that the network learns the filters that in traditional algorithms were hand-engineered. This independence from prior knowledge and human effort in feature design is a major advantage.
+
+They have applications in image and video recognition, recommender systems, image classification, medical image analysis, and natural language processing.},
+	language = {en},
+	urldate = {2019-10-15},
+	journal = {Wikipedia},
+	author = {{Wikipedia}},
+	month = oct,
+	year = {2019}
+}
+
+@inproceedings{erlacher_how_2018,
+	address = {New York, NY, USA},
+	series = {{WTMC} '18},
+	title = {How to {Test} an {IDS}?: {GENESIDS}: {An} {Automated} {System} for {Generating} {Attack} {Traffic}},
+	isbn = {978-1-4503-5910-8},
+	shorttitle = {How to {Test} an {IDS}?},
+	url = {http://doi.acm.org/10.1145/3229598.3229601},
+	doi = {10.1145/3229598.3229601},
+	abstract = {Evaluating the attack coverage of signature-based Network Intrusion Detection System (NIDS) is a necessary but difficult task. Often, live or recorded real-world traffic is used. However, firstly, real-world network traffic is hard to come by at larger scale and the few available traces usually do not contain application layer payload. Secondly and more importantly, it contains only very few realistic attacks. So, the question remains how to test a NIDS? We propose GENESIDS, a system that automatically generates user definable HTTP attacks and, thus, allows for straightforward creation of network traces (or live traffic) where the number of different detectable events is only confined by the given attack definitions. By using an input format that follows the Snort syntax, the system can take advantage of thousands of realistic attack definitions. Our system can be used in combination with traffic generators to maintain typical load patterns as background traffic. Our evaluation shows that GENESIDS is able to reliably produce a very broad variation of HTTP attacks. GENESIDS is available as Open Source softtware.},
+	urldate = {2019-10-15},
+	booktitle = {Proceedings of the 2018 {Workshop} on {Traffic} {Measurements} for {Cybersecurity}},
+	publisher = {ACM},
+	author = {Erlacher, Felix and Dressler, Falko},
+	year = {2018},
+	pages = {46--51}
+}
+
+@inproceedings{rigaki_bringing_2018,
+	title = {Bringing a {GAN} to a {Knife}-{Fight}: {Adapting} {Malware} {Communication} to {Avoid} {Detection}},
+	shorttitle = {Bringing a {GAN} to a {Knife}-{Fight}},
+	doi = {10.1109/SPW.2018.00019},
+	abstract = {Generative Adversarial Networks (GANs) have been successfully used in a large number of domains. This paper proposes the use of GANs for generating network traffic in order to mimic other types of traffic. In particular, our method modifies the network behavior of a real malware in order to mimic the traffic of a legitimate application, and therefore avoid detection. By modifying the source code of a malware to receive parameters from a GAN, it was possible to adapt the behavior of its Command and Control (C2) channel to mimic the behavior of Facebook chat network traffic. In this way, it was possible to avoid the detection of new-generation Intrusion Prevention Systems that use machine learning and behavioral characteristics. A real-life scenario was successfully implemented using the Stratosphere behavioral IPS in a router, while the malware and the GAN were deployed in the local network of our laboratory, and the C2 server was deployed in the cloud. Results show that a GAN can successfully modify the traffic of a malware to make it undetectable. The modified malware also tested if it was being blocked and used this information as a feedback to the GAN. This work envisions the possibility of self-adapting malware and self-adapting IPS.},
+	booktitle = {2018 {IEEE} {Security} and {Privacy} {Workshops} ({SPW})},
+	author = {Rigaki, Maria and Garcia, Sebastian},
+	month = may,
+	year = {2018},
+	keywords = {telecommunication traffic, computer network security, Facebook, Facebook chat network traffic, Gallium nitride, GAN, Generative adversarial networks, Generative Adversarial Networks, Generators, intrusion detection, intrusion prevention, invasive software, IP networks, malware, Malware, malware communication, network behavior, network traffic obfuscation, new-generation Intrusion Prevention Systems, security of data, self-adapting malware, Servers, social networking (online), Stratosphere behavioral IPS, telecommunication channels, telecommunication network routing},
+	pages = {70--75}
+}
+
+@article{rigaki_adversarial_2017,
+	title = {Adversarial {Deep} {Learning} {Against} {Intrusion} {Detection} {Classifiers}},
+	abstract = {Traditional approaches in network intrusion detection follow a signature-based approach, however the use of anomaly detection approaches and machine learning techniques have been studied heavily for the past twenty years. The continuous change in the way attacks are appearing, the volume of attacks, as well as the improvements in the big data analytics space, make machine learning approaches more alluring than ever. The intention of this paper is to show that using machine learning in the intrusion detection domain should be accompanied with an evaluation of its robustness against adversaries. Several adversarial techniques have emerged lately from the deep learning research, largely in the area of image classification. These techniques are based on the idea of introducing small changes in the original input data in order to make a machine learning model to misclassify it. This paper follows a big data analytics methodology and explores adversarial machine learning techniques that have emerged from the deep learning domain, against machine learning classifiers used for network intrusion detection. We look at several well-known classifiers and study their performance under attack over several metrics, such as accuracy, F1-score and receiver operating characteristic. The approach used assumes no knowledge of the original classifier and examines both general and targeted misclassification. The results show that using relatively simple methods for generating adversarial samples it is possible to lower the detection accuracy of intrusion detection classifiers as much as 27\%. Performance degradation is achieved using a methodology that is simpler than previous approaches and it requires only 6.14\% change between the original and the adversarial sample, making it a candidate for a practical adversarial approach.},
+	language = {en},
+	author = {Rigaki, Maria and Elragal, Ahmed},
+	year = {2017},
+	pages = {14}
+}
+
+@inproceedings{yang_adversarial_2018,
+	title = {Adversarial {Examples} {Against} the {Deep} {Learning} {Based} {Network} {Intrusion} {Detection} {Systems}},
+	doi = {10.1109/MILCOM.2018.8599759},
+	abstract = {Deep learning begins to be widely applied in security applications, but the vulnerability of deep learning in front of adversarial examples raises people's concern. In this paper, we study the practicality of adversarial example in the domain of network intrusion detection systems (NIDS). Specifically, we investigate how adversarial examples affect the performance of deep neural network (DNN) trained to detect abnormal behaviors in the black-box model. We demonstrate that adversary can generate effective adversarial examples against DNN classifier trained for NIDS even when the internal information of the target model is isolated from the adversary. In our experiment we first train a DNN model for NIDS system using NSL-KDD database and achieve a performance matching the state-of-art literature, then we show how can an adversary generate adversary examples to mislead the model without knowing the internal information.},
+	booktitle = {{MILCOM} 2018 - 2018 {IEEE} {Military} {Communications} {Conference} ({MILCOM})},
+	author = {Yang, Kaichen and Liu, Jianqing and Zhang, Chi and Fang, Yuguang},
+	month = oct,
+	year = {2018},
+	keywords = {adversarial example, black-box model, computer network security, database management systems, deep learning, Deep learning, deep neural network, DNN classifier, Feature extraction, internal information, intrusion detection, Intrusion detection, network intrusion detection systems, neural nets, Neural networks, Neurons, NSL-KDD database, Perturbation methods, security, security application},
+	pages = {559--564}
+}
+
+@inproceedings{mirsky_kitsune:_2018,
+	address = {San Diego, CA},
+	title = {Kitsune: {An} {Ensemble} of {Autoencoders} for {Online} {Network} {Intrusion} {Detection}},
+	isbn = {978-1-891562-49-5},
+	shorttitle = {Kitsune},
+	url = {https://www.ndss-symposium.org/wp-content/uploads/2018/02/ndss2018_03A-3_Mirsky_paper.pdf},
+	doi = {10.14722/ndss.2018.23204},
+	abstract = {Neural networks have become an increasingly popular solution for network intrusion detection systems (NIDS). Their capability of learning complex patterns and behaviors make them a suitable solution for differentiating between normal trafﬁc and network attacks. However, a drawback of neural networks is the amount of resources needed to train them. Many network gateways and routers devices, which could potentially host an NIDS, simply do not have the memory or processing power to train and sometimes even execute such models. More importantly, the existing neural network solutions are trained in a supervised manner. Meaning that an expert must label the network trafﬁc and update the model manually from time to time.},
+	language = {en},
+	urldate = {2019-10-23},
+	booktitle = {Proceedings 2018 {Network} and {Distributed} {System} {Security} {Symposium}},
+	publisher = {Internet Society},
+	author = {Mirsky, Yisroel and Doitshman, Tomer and Elovici, Yuval and Shabtai, Asaf},
+	year = {2018}
+}
+
+@article{anani_recurrent_2018,
+	title = {Recurrent {Neural} {Network} {Architectures} {Toward} {Intrusion} {Detection}},
+	abstract = {Recurrent Neural Networks (RNN) show a remarkable result in sequence learning, particularly in architectures with gated unit structures such as Long Short-term Memory (LSTM). In recent years, several permutations of LSTM architecture have been proposed mainly to overcome the computational complexity of LSTM. In this dissertation, a novel study is presented that will empirically investigate and evaluate LSTM architecture variants such as Gated Recurrent Unit (GRU), Bi-Directional LSTM, and Dynamic-RNN for LSTM and GRU speciﬁcally on detecting network intrusions. The investigation is designed to identify the learning time required for each architecture algorithm and to measure the intrusion prediction accuracy. RNN was evaluated on the DARPA/KDD Cup’99 intrusion detection dataset for each architecture. Feature selection mechanisms were also implemented to help in identifying and removing nonessential variables from data that do not aﬀect the accuracy of the prediction models, in this case Principal Component Analysis (PCA) and the RandomForest (RF) algorithm. The results showed that RF captured more signiﬁcant features over PCA when the accuracy for RF 97.86\% for LSTM and 96.59\% for GRU, were PCA 64.34\% for LSTM and 67.97\% for GRU. In terms of RNN architectures, prediction accuracy of each variant exhibited improvement at speciﬁc parameters, yet with a large dataset and a suitable time training, the standard vanilla LSTM tended to lead among all other RNN architectures which scored 99.48\%. Although Dynamic RNN’s oﬀered better performance with accuracy, Dynamic-RNN GRU scored 99.34\%, however they tended to take a longer time to be trained with high training cycles, Dynamic-RNN LSTM needs 25284.03 seconds at 1000 training cycle. GRU architecture had one variant introduced to reduce LSTM complexity, which developed with fewer parameters resulting in a faster-trained model compared to LSTM needs 1903.09 seconds when LSTM required 2354.93 seconds for the same training cycle. It also showed equivalent performance with respect to the parameters such as hidden layers and time-step. BLSTM oﬀered impressive training time as 190 seconds at 100 training cycle, though the accuracy was below that of the other RNN architectures which didn’t exceed 90\%.},
+	language = {en},
+	author = {Anani, Wafaa},
+	year = {2018},
+	pages = {67}
+}
+
+@article{yin_deep_2017,
+	title = {A {Deep} {Learning} {Approach} for {Intrusion} {Detection} {Using} {Recurrent} {Neural} {Networks}},
+	volume = {5},
+	issn = {2169-3536},
+	doi = {10.1109/ACCESS.2017.2762418},
+	abstract = {Intrusion detection plays an important role in ensuring information security, and the key technology is to accurately identify various attacks in the network. In this paper, we explore how to model an intrusion detection system based on deep learning, and we propose a deep learning approach for intrusion detection using recurrent neural networks (RNN-IDS). Moreover, we study the performance of the model in binary classification and multiclass classification, and the number of neurons and different learning rate impacts on the performance of the proposed model. We compare it with those of J48, artificial neural network, random forest, support vector machine, and other machine learning methods proposed by previous researchers on the benchmark data set. The experimental results show that RNN-IDS is very suitable for modeling a classification model with high accuracy and that its performance is superior to that of traditional machine learning classification methods in both binary and multiclass classification. The RNN-IDS model improves the accuracy of the intrusion detection and provides a new research method for intrusion detection.},
+	journal = {IEEE Access},
+	author = {Yin, Chuanlong and Zhu, Yuefei and Fei, Jinlong and He, Xinzheng},
+	year = {2017},
+	keywords = {machine learning, deep learning, learning (artificial intelligence), Machine learning, intrusion detection, security of data, Intrusion detection, Testing, Training, artificial neural network, Computational modeling, deep learning approach, information security, intrusion detection system, machine learning classification, multiclass classification, pattern classification, recurrent neural nets, recurrent neural networks, Recurrent neural networks, RNN-IDS, RNN-IDS model, support vector machines, Support vector machines},
+	pages = {21954--21961}
+}
+
+@inproceedings{kim_long_2016,
+	address = {Jeju},
+	title = {Long {Short} {Term} {Memory} {Recurrent} {Neural} {Network} {Classifier} for {Intrusion} {Detection}},
+	isbn = {978-1-4673-8685-2},
+	url = {http://ieeexplore.ieee.org/document/7456805/},
+	doi = {10.1109/PlatCon.2016.7456805},
+	abstract = {Due to the advance of information and communication techniques, sharing information through online has been increased. And this leads to creating the new added value. As a result, various online services were created. However, as increasing connection points to the internet, the threats of cyber security have also been increasing. Intrusion detection system(IDS) is one of the important security issues today. In this paper, we construct an IDS model with deep learning approach. We apply Long Short Term Memory(LSTM) architecture to a Recurrent Neural Network(RNN) and train the IDS model using KDD Cup 1999 dataset. Through the performance test, we conﬁrm that the deep learning approach is effective for IDS.},
+	language = {en},
+	urldate = {2019-10-23},
+	booktitle = {2016 {International} {Conference} on {Platform} {Technology} and {Service} ({PlatCon})},
+	publisher = {IEEE},
+	author = {Kim, Jihyun and Kim, Jaehyun and Thu, Huong Le Thi and Kim, Howon},
+	month = feb,
+	year = {2016},
+	pages = {1--5}
+}
+
+@article{papernot_crafting_2016,
+	title = {Crafting {Adversarial} {Input} {Sequences} for {Recurrent} {Neural} {Networks}},
+	abstract = {Machine learning models are frequently used to solve complex security problems, as well as to make decisions in sensitive situations like guiding autonomous vehicles or predicting financial market behaviors. Previous efforts have shown that numerous machine learning models were vulnerable to adversarial manipulations of their inputs taking the form of adversarial samples. Such inputs are crafted by adding carefully selected perturbations to legitimate inputs so as to force the machine learning model to misbehave, for instance by outputting a wrong class if the machine learning task of interest is classification. In fact, to the best of our knowledge, all previous work on adversarial samples crafting for neural network considered models used to solve classification tasks, most frequently in computer vision applications. In this paper, we contribute to the field of adversarial machine learning by investigating adversarial input sequences for recurrent neural networks processing sequential data. We show that the classes of algorithms introduced previously to craft adversarial samples misclassified by feed-forward neural networks can be adapted to recurrent neural networks. In a experiment, we show that adversaries can craft adversarial sequences misleading both categorical and sequential recurrent neural networks.},
+	urldate = {2019-10-23},
+	journal = {arXiv:1604.08275},
+	author = {Papernot, Nicolas and McDaniel, Patrick and Swami, Ananthram and Harang, Richard},
+	month = apr,
+	year = {2016},
+	keywords = {Computer Science - Cryptography and Security, Computer Science - Machine Learning, Computer Science - Neural and Evolutionary Computing}
+}
+
+@inproceedings{vinayakumar_applying_2017,
+	title = {Applying convolutional neural network for network intrusion detection},
+	doi = {10.1109/ICACCI.2017.8126009},
+	abstract = {Recently, Convolutional neural network (CNN) architectures in deep learning have achieved significant results in the field of computer vision. To transform this performance toward the task of intrusion detection (ID) in cyber security, this paper models network traffic as time-series, particularly transmission control protocol / internet protocol (TCP/IP) packets in a predefined time range with supervised learning methods such as multi-layer perceptron (MLP), CNN, CNN-recurrent neural network (CNN-RNN), CNN-long short-term memory (CNN-LSTM) and CNN-gated recurrent unit (GRU), using millions of known good and bad network connections. To measure the efficacy of these approaches we evaluate on the most important synthetic ID data set such as KDDCup 99. To select the optimal network architecture, comprehensive analysis of various MLP, CNN, CNN-RNN, CNN-LSTM and CNN-GRU with its topologies, network parameters and network structures is used. The models in each experiment are run up to 1000 epochs with learning rate in the range [0.01-05]. CNN and its variant architectures have significantly performed well in comparison to the classical machine learning classifiers. This is mainly due to the reason that CNN have capability to extract high level feature representations that represents the abstract form of low level feature sets of network traffic connections.},
+	booktitle = {2017 {International} {Conference} on {Advances} in {Computing}, {Communications} and {Informatics} ({ICACCI})},
+	author = {Vinayakumar, R and Soman, K P and Poornachandran, Prabaharan},
+	month = sep,
+	year = {2017},
+	keywords = {Protocols, telecommunication traffic, Internet, Machine learning, transport protocols, Feature extraction, computer network security, Malware, security of data, Recurrent neural networks, bad network connections, CNN-GRU, CNN-LSTM, CNN-RNN, computer vision, convolution, Convolution, Convolutional neural network architectures, deep learning: convolutional neural network (CNN), gated recurrent unit (GRU), intrusion detection (ID) data sets: KDDCup 99, multilayer perceptrons, network intrusion detection, network parameters, network structures, network traffic connections, NSL-KDD, optimal network architecture, recurrent neural network (RNN) long short-term memory (LSTM), time series, transmission control protocol-internet protocol packets},
+	pages = {1222--1228}
+}
+
+@article{chen_detecting_2018,
+	title = {Detecting {Backdoor} {Attacks} on {Deep} {Neural} {Networks} by {Activation} {Clustering}},
+	abstract = {While machine learning (ML) models are being increasingly trusted to make decisions in different and varying areas, the safety of systems using such models has become an increasing concern. In particular, ML models are often trained on data from potentially untrustworthy sources, providing adversaries with the opportunity to manipulate them by inserting carefully crafted samples into the training set. Recent work has shown that this type of attack, called a poisoning attack, enables adversaries to insert backdoors or trojans into the model, enabling malicious behavior with simple external backdoor triggers at inference time and only a blackbox perspective of the model itself. Detecting this type of attack is challenging because the unexpected behavior occurs only when a backdoor trigger, which is known only to the adversary, is present. Model users, either direct users of training data or users of pre-trained model from a catalog, may not guarantee the safe operation of their ML-based system. In this paper, we propose a novel approach to backdoor detection and removal for neural networks. Through extensive experimental results, we demonstrate its effectiveness for neural networks classifying text and images. To the best of our knowledge, this is the ﬁrst methodology capable of detecting poisonous data crafted to insert backdoors and repairing the model that does not require a veriﬁed and trusted dataset.},
+	language = {en},
+	author = {Chen, Bryant and Carvalho, Wilka and Baracaldo, Nathalie and Edwards, Benjamin and Lee, Taesung and Ludwig, Heiko and Molloy, Ian and Srivastava, Biplav},
+	year = {2018},
+	pages = {8}
+}
+
+@inproceedings{goodfellow_explaining_2015,
+	title = {Explaining and {Harnessing} {Adversarial} {Examples}},
+	url = {http://arxiv.org/abs/1412.6572},
+	booktitle = {{ICLR}},
+	author = {Goodfellow, Ian and Shlens, Jonathon and Szegedy, Christian},
+	year = {2015}
+}
+
+@inproceedings{szegedy_intriguing_2014,
+	title = {Intriguing properties of neural networks},
+	url = {http://arxiv.org/abs/1312.6199},
+	booktitle = {{ICLR}},
+	author = {Szegedy, Christian and Zaremba, Wojciech and Sutskever, Ilya and Bruna, Joan and Erhan, Dumitru and Goodfellow, Ian and Fergus, Rob},
+	year = {2014}
+}
+
+@inproceedings{carlini_towards_2017,
+	title = {Towards {Evaluating} the {Robustness} of {Neural} {Networks}},
+	abstract = {Neural networks provide state-of-the-art results for most machine learning tasks. Unfortunately, neural networks are vulnerable to adversarial examples: given an input x and any target classification t, it is possible to find a new input x' that is similar to x but classified as t. This makes it difficult to apply neural networks in security-critical areas. Defensive distillation is a recently proposed approach that can take an arbitrary neural network, and increase its robustness, reducing the success rate of current attacks' ability to find adversarial examples from 95\% to 0.5\%. In this paper, we demonstrate that defensive distillation does not significantly increase the robustness of neural networks by introducing three new attack algorithms that are successful on both distilled and undistilled neural networks with 100\% probability. Our attacks are tailored to three distance metrics used previously in the literature, and when compared to previous adversarial example generation algorithms, our attacks are often much more effective (and never worse). Furthermore, we propose using high-confidence adversarial examples in a simple transferability test we show can also be used to break defensive distillation. We hope our attacks will be used as a benchmark in future defense attempts to create neural networks that resist adversarial examples.},
+	booktitle = {S\&{P}},
+	publisher = {IEEE},
+	author = {Carlini, Nicholas and Wagner, David},
+	month = may,
+	year = {2017},
+	keywords = {attack algorithms, defensive distillation, distance metrics, high-confidence adversarial examples, machine learning, Malware, Measurement, neural nets, neural networks, Neural networks, Resists, Robustness, Security, security of data, Speech recognition, transferability test},
+	pages = {39--57}
+}
+
+@article{madry_towards_2018,
+	title = {Towards {Deep} {Learning} {Models} {Resistant} to {Adversarial} {Attacks}},
+	abstract = {Recent work has demonstrated that deep neural networks are vulnerable to adversarial examples---inputs that are almost indistinguishable from natural data and yet classified incorrectly by the network. In fact, some of the latest findings suggest that the existence of adversarial attacks may be an inherent weakness of deep learning models. To address this problem, we study the adversarial robustness of neural networks through the lens of robust optimization. This approach provides us with a broad and unifying view on much of the prior work on this topic. Its principled nature also enables us to identify methods for both training and attacking neural networks that are reliable and, in a certain sense, universal. In particular, they specify a concrete security guarantee that would protect against any adversary. These methods let us train networks with significantly improved resistance to a wide range of adversarial attacks. They also suggest the notion of security against a first-order adversary as a natural and broad security guarantee. We believe that robustness against such well-defined classes of adversaries is an important stepping stone towards fully resistant deep learning models. Code and pre-trained models are available at https://github.com/MadryLab/mnist\_challenge and https://github.com/MadryLab/cifar10\_challenge.},
+	urldate = {2019-10-24},
+	journal = {ICLR},
+	author = {Madry, Aleksander and Makelov, Aleksandar and Schmidt, Ludwig and Tsipras, Dimitris and Vladu, Adrian},
+	year = {2018},
+	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning, Computer Science - Neural and Evolutionary Computing},
+	annote = {Comment: ICLR'18}
+}
+
+@article{strumbelj_explaining_2014,
+	title = {Explaining prediction models and individual predictions with feature contributions},
+	volume = {41},
+	issn = {0219-3116},
+	url = {https://doi.org/10.1007/s10115-013-0679-x},
+	doi = {10.1007/s10115-013-0679-x},
+	abstract = {We present a sensitivity analysis-based method for explaining prediction models that can be applied to any type of classification or regression model. Its advantage over existing general methods is that all subsets of input features are perturbed, so interactions and redundancies between features are taken into account. Furthermore, when explaining an additive model, the method is equivalent to commonly used additive model-specific methods. We illustrate the method’s usefulness with examples from artificial and real-world data sets and an empirical analysis of running times. Results from a controlled experiment with 122 participants suggest that the method’s explanations improved the participants’ understanding of the model.},
+	language = {en},
+	number = {3},
+	urldate = {2019-11-15},
+	journal = {Knowledge and Information Systems},
+	author = {Štrumbelj, Erik and Kononenko, Igor},
+	month = dec,
+	year = {2014},
+	keywords = {Data mining, Decision support, Interpretability, Knowledge discovery, Visualization},
+	pages = {647--665}
+}
+
+@article{egmont-petersen_assessing_1998,
+	title = {Assessing the importance of features for multi-layer perceptrons},
+	volume = {11},
+	issn = {0893-6080},
+	url = {http://www.sciencedirect.com/science/article/pii/S0893608098000318},
+	doi = {10.1016/S0893-6080(98)00031-8},
+	abstract = {In this paper we establish a mathematical framework in which we develop measures for determining the contribution of individual features to the performance of a classifier. Corresponding to these measures, we design metrics that allow estimation of the importance of features for a specific multi-layer perceptron neural network. It is shown that all measures constitute lower bounds for the correctness that can be obtained when the feature under study is excluded and the classifier rebuilt. We also present a method for pruning input nodes from the network such that most of the knowledge encoded in its weights is retained. The proposed metrics and the pruning method are validated with a number of experiments with artificial classification tasks. The experiments indicate that the metric called replaceability results in the tightest error bounds. Both this metric and the metric called expected influence result in good rankings of the features.},
+	language = {en},
+	number = {4},
+	urldate = {2019-11-15},
+	journal = {Neural Networks},
+	author = {Egmont-Petersen, Michael and Talmon, Jan L. and Hasman, Arie and Ambergen, Anton W.},
+	month = jun,
+	year = {1998},
+	keywords = {Neural networks, Bayes classifier, Feature assessment, Feature measures, Feature metrics, Feature selection, Insight, Pruning},
+	pages = {623--635}
+}
+
+@misc{stackexchange_cross_validated_neural_2019,
+	title = {neural networks - {Variable} importance in {RNN} or {LSTM}},
+	url = {https://stats.stackexchange.com/questions/191855/variable-importance-in-rnn-or-lstm},
+	urldate = {2019-11-15},
+	journal = {Cross Validated},
+	author = {{StackExchange Cross Validated}},
+	year = {2019},
+	note = {ht
+tps://stats.stackexchange.com/questions/191855/variable-importance-in-rnn-or-lstm}
+}
+
+@misc{stackexchange_cross_validated_feature_2016,
+	title = {Feature selection using deep learning?},
+	url = {https://stats.stackexchange.com/questions/250381/feature-selection-using-deep-learning},
+	urldate = {2019-11-15},
+	journal = {Cross Validated},
+	author = {{StackExchange Cross Validated}},
+	year = {2016},
+	note = {https://stats.stackexchange.com/questions/250381/feature-selection-using-deep-learning}
+}
+
+@article{srivastava_dropout:_2014,
+	title = {Dropout: {A} {Simple} {Way} to {Prevent} {Neural} {Networks} from {Overfitting}},
+	volume = {15},
+	shorttitle = {Dropout},
+	url = {http://jmlr.org/papers/v15/srivastava14a.html},
+	urldate = {2019-11-28},
+	journal = {Journal of Machine Learning Research},
+	author = {Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+	year = {2014},
+	pages = {1929--1958}
+}
+
+@inproceedings{bachl_walling_2019,
+	address = {Orlando, FL, USA},
+	title = {Walling {Up} {Backdoors} in {Intrusion} {Detection} {Systems}},
+	abstract = {Interest in poisoning attacks and backdoors recently resurfaced for Deep Learning (DL) applications. Several successful defense mechanisms have been recently proposed for Convolutional Neural Networks (CNNs), for example in the context of autonomous driving. We show that visualization approaches can aid in identifying a backdoor independent of the used classifier. Surprisingly, we find that common defense mechanisms fail utterly to remove backdoors in DL for Intrusion Detection Systems (IDSs). Finally, we devise pruning-based approaches to remove backdoors for Decision Trees (DTs) and Random Forests (RFs) and demonstrate their effectiveness for two different network security datasets.},
+	urldate = {2019-12-07},
+	booktitle = {Big-{DAMA} '19},
+	publisher = {ACM},
+	author = {Bachl, Maximilian and Hartl, Alexander and Fabini, Joachim and Zseby, Tanja},
+	year = {2019},
+	keywords = {Deep Learning, Explainable AI, Network security, Poisoning attack, Pruning, Random Forests},
+	pages = {8--13}
+}
+
+@article{dhurandhar_model_2018,
+	title = {Model {Agnostic} {Contrastive} {Explanations} for {Machine} {Learning} {Classification} {Models}},
+	language = {en},
+	author = {Dhurandhar, Amit and Chen, Pin-Yu and Shanmugam, Karthikeyan and Pedapati, Tejaswini and Balakrishnan, Avinash and Puri, Ruchir},
+	year = {2018}
+}
+
+@article{olden_accurate_2004,
+	title = {An accurate comparison of methods for quantifying variable importance in artificial neural networks using simulated data},
+	volume = {178},
+	issn = {0304-3800},
+	url = {http://www.sciencedirect.com/science/article/pii/S0304380004001565},
+	doi = {10.1016/j.ecolmodel.2004.03.013},
+	abstract = {Artificial neural networks (ANNs) are receiving greater attention in the ecological sciences as a powerful statistical modeling technique; however, they have also been labeled a “black box” because they are believed to provide little explanatory insight into the contributions of the independent variables in the prediction process. A recent paper published in Ecological Modelling [Review and comparison of methods to study the contribution of variables in artificial neural network models, Ecol. Model. 160 (2003) 249–264] addressed this concern by providing a comprehensive comparison of eight different methodologies for estimating variable importance in neural networks that are commonly used in ecology. Unfortunately, comparisons of the different methodologies were based on an empirical dataset, which precludes the ability to establish generalizations regarding the true accuracy and precision of the different approaches because the true importance of the variables is unknown. Here, we provide a more appropriate comparison of the different methodologies by using Monte Carlo simulations with data exhibiting defined (and consequently known) numeric relationships. Our results show that a Connection Weight Approach that uses raw input-hidden and hidden-output connection weights in the neural network provides the best methodology for accurately quantifying variable importance and should be favored over the other approaches commonly used in the ecological literature. Average similarity between true and estimated ranked variable importance using this approach was 0.92, whereas, similarity coefficients ranged between 0.28 and 0.74 for the other approaches. Furthermore, the Connection Weight Approach was the only method that consistently identified the correct ranked importance of all predictor variables, whereas, the other methods either only identified the first few important variables in the network or no variables at all. The most notably result was that Garson’s Algorithm was the poorest performing approach, yet is the most commonly used in the ecological literature. In conclusion, this study provides a robust comparison of different methodologies for assessing variable importance in neural networks that can be generalized to other data and from which valid recommendations can be made for future studies.},
+	language = {en},
+	number = {3},
+	urldate = {2019-12-07},
+	journal = {Ecological Modelling},
+	author = {Olden, Julian D and Joy, Michael K and Death, Russell G},
+	month = nov,
+	year = {2004},
+	keywords = {Connection weights, Explanatory power, Garson’s algorithm, Sensitivity analysis, Statistical models},
+	pages = {389--397}
+}
+
+@article{chang_dropout_2017,
+	title = {Dropout feature ranking for deep learning models},
+	journal = {arXiv:1712.08645},
+	author = {Chang, Chun-Hao and Rampasek, Ladislav and Goldenberg, Anna},
+	year = {2017}
+}
+
+@incollection{lundberg_unified_2017,
+	title = {A {Unified} {Approach} to {Interpreting} {Model} {Predictions}},
+	url = {http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions.pdf},
+	urldate = {2019-12-09},
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 30},
+	publisher = {Curran Associates, Inc.},
+	author = {Lundberg, Scott M and Lee, Su-In},
+	year = {2017},
+	pages = {4765--4774},
+	file = {NIPS Full Text PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/UYS3ZZAP/Lundberg and Lee - 2017 - A Unified Approach to Interpreting Model Predictio.pdf:application/pdf;NIPS Snapshot:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/ZCI5F2NE/7062-a-unified-approach-to-interpreting-model-predictions.html:text/html}
+}
+
+@inproceedings{ribeiro_why_2016,
+	address = {San Francisco, California, USA},
+	title = {"{Why} {Should} {I} {Trust} {You}?": {Explaining} the {Predictions} of {Any} {Classifier}},
+	isbn = {978-1-4503-4232-2},
+	shorttitle = {"{Why} {Should} {I} {Trust} {You}?},
+	url = {http://doi.acm.org/10.1145/2939672.2939778},
+	doi = {10.1145/2939672.2939778},
+	abstract = {Despite widespread adoption, machine learning models remain mostly black boxes. Understanding the reasons behind predictions is, however, quite important in assessing trust, which is fundamental if one plans to take action based on a prediction, or when choosing whether to deploy a new model. Such understanding also provides insights into the model, which can be used to transform an untrustworthy model or prediction into a trustworthy one. In this work, we propose LIME, a novel explanation technique that explains the predictions of any classifier in an interpretable and faithful manner, by learning an interpretable model locally varound the prediction. We also propose a method to explain models by presenting representative individual predictions and their explanations in a non-redundant way, framing the task as a submodular optimization problem. We demonstrate the flexibility of these methods by explaining different models for text (e.g. random forests) and image classification (e.g. neural networks). We show the utility of explanations via novel experiments, both simulated and with human subjects, on various scenarios that require trust: deciding if one should trust a prediction, choosing between models, improving an untrustworthy classifier, and identifying why a classifier should not be trusted.},
+	urldate = {2019-12-10},
+	booktitle = {{KDD}},
+	publisher = {ACM},
+	author = {Ribeiro, Marco Tulio and Singh, Sameer and Guestrin, Carlos},
+	year = {2016},
+	keywords = {black box classifier, explaining machine learning, interpretability, interpretable machine learning},
+	pages = {1135--1144},
+	file = {ACM Full Text PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/EFG232DX/Ribeiro et al. - 2016 - Why Should I Trust You Explaining the Predicti.pdf:application/pdf}
+}
+
+@book{molnar_interpretable_2019,
+	title = {Interpretable {Machine} {Learning}: {A} {Guide} for {Making} {Black} {Box} {Models} {Explainable}},
+	author = {Molnar, Christoph},
+	year = {2019},
+	annote = {https://christophm.github.io/interpretable-ml-book/}
+}
+
+@article{shapley_value_1953,
+	title = {A value for n-person games},
+	volume = {2},
+	number = {28},
+	journal = {Contributions to the Theory of Games},
+	author = {Shapley, Lloyd S},
+	year = {1953},
+	pages = {307--317}
+}
+
+@inproceedings{hashemi_towards_2019,
+	address = {Orlando, FL, USA},
+	title = {Towards {Evaluation} of {NIDSs} in {Adversarial} {Setting}},
+	isbn = {978-1-4503-6999-2},
+	url = {http://dl.acm.org/citation.cfm?doid=3359992.3366642},
+	doi = {10.1145/3359992.3366642},
+	abstract = {Signature-based Network Intrusion Detection Systems (NIDSs) have traditionally been used to detect malicious traffic, but they are incapable of detecting new threats. As a result, anomaly-based NIDSs, built on neural networks, are beginning to receive attention due to their ability to seek out new attacks. However, it has been shown that neural networks are vulnerable to adversarial example attacks in other domains. But, previously proposed anomaly-based NIDSs have not been evaluated in such adversarial settings. In this paper, we show how to evaluate an anomaly-based NIDS trained on network traffic in the face of adversarial inputs. We show how to craft adversarial inputs in the highly constrained network domain, and we evaluate 3 recently proposed NIDSs in an adversarial setting.},
+	language = {en},
+	urldate = {2019-12-16},
+	booktitle = {Big-{DAMA} '19},
+	publisher = {ACM},
+	author = {Hashemi, Mohammad J. and Cusack, Greg and Keller, Eric},
+	year = {2019},
+	pages = {14--21},
+	file = {Hashemi et al. - 2019 - Towards Evaluation of NIDSs in Adversarial Setting.pdf:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/PBLZIA2X/Hashemi et al. - 2019 - Towards Evaluation of NIDSs in Adversarial Setting.pdf:application/pdf}
+}
+
+@incollection{mao_metric_2019,
+	title = {Metric {Learning} for {Adversarial} {Robustness}},
+	url = {http://papers.nips.cc/paper/8339-metric-learning-for-adversarial-robustness.pdf},
+	urldate = {2019-12-16},
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 32},
+	publisher = {Curran Associates, Inc.},
+	author = {Mao, Chengzhi and Zhong, Ziyuan and Yang, Junfeng and Vondrick, Carl and Ray, Baishakhi},
+	editor = {Wallach, H. and Larochelle, H. and Beygelzimer, A. and Alché-Buc, F. d{\textbackslash}textquotesingle and Fox, E. and Garnett, R.},
+	year = {2019},
+	pages = {478--489},
+	file = {NIPS Full Text PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/YDGC7EJK/Mao et al. - 2019 - Metric Learning for Adversarial Robustness.pdf:application/pdf;NIPS Snapshot:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/NWXJ27HY/8339-metric-learning-for-adversarial-robustness.html:text/html}
+}
+
+@article{carlini_evaluating_2019,
+	title = {On {Evaluating} {Adversarial} {Robustness}},
+	url = {http://arxiv.org/abs/1902.06705},
+	abstract = {Correctly evaluating defenses against adversarial examples has proven to be extremely difficult. Despite the significant amount of recent work attempting to design defenses that withstand adaptive attacks, few have succeeded; most papers that propose defenses are quickly shown to be incorrect. We believe a large contributing factor is the difficulty of performing security evaluations. In this paper, we discuss the methodological foundations, review commonly accepted best practices, and suggest new methods for evaluating defenses to adversarial examples. We hope that both researchers developing defenses as well as readers and reviewers who wish to understand the completeness of an evaluation consider our advice in order to avoid common pitfalls.},
+	urldate = {2019-12-16},
+	journal = {arXiv:1902.06705},
+	author = {Carlini, Nicholas and Athalye, Anish and Papernot, Nicolas and Brendel, Wieland and Rauber, Jonas and Tsipras, Dimitris and Goodfellow, Ian and Madry, Aleksander and Kurakin, Alexey},
+	month = feb,
+	year = {2019},
+	keywords = {Computer Science - Cryptography and Security, Computer Science - Machine Learning, Statistics - Machine Learning},
+	annote = {Comment: Living document; source available at https://github.com/evaluating-adversarial-robustness/adv-eval-paper/},
+	file = {arXiv Fulltext PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/9MJGV3TW/Carlini et al. - 2019 - On Evaluating Adversarial Robustness.pdf:application/pdf;arXiv.org Snapshot:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/DN2M5NPK/1902.html:text/html}
+}
+
+@article{olden_illuminating_2002,
+	title = {Illuminating the “black box”: a randomization approach for understanding variable contributions in artificial neural networks},
+	volume = {154},
+	issn = {0304-3800},
+	shorttitle = {Illuminating the “black box”},
+	url = {http://www.sciencedirect.com/science/article/pii/S0304380002000649},
+	doi = {10.1016/S0304-3800(02)00064-9},
+	abstract = {With the growth of statistical modeling in the ecological sciences, researchers are using more complex methods, such as artificial neural networks (ANNs), to address problems associated with pattern recognition and prediction. Although in many studies ANNs have been shown to exhibit superior predictive power compared to traditional approaches, they have also been labeled a “black box” because they provide little explanatory insight into the relative influence of the independent variables in the prediction process. This lack of explanatory power is a major concern to ecologists since the interpretation of statistical models is desirable for gaining knowledge of the causal relationships driving ecological phenomena. In this study, we describe a number of methods for understanding the mechanics of ANNs (e.g. Neural Interpretation Diagram, Garson's algorithm, sensitivity analysis). Next, we propose and demonstrate a randomization approach for statistically assessing the importance of axon connection weights and the contribution of input variables in the neural network. This approach provides researchers with the ability to eliminate null-connections between neurons whose weights do not significantly influence the network output (i.e. predicted response variable), thus facilitating the interpretation of individual and interacting contributions of the input variables in the network. Furthermore, the randomization approach can identify variables that significantly contribute to network predictions, thereby providing a variable selection method for ANNs. We show that by extending randomization approaches to ANNs, the “black box” mechanics of ANNs can be greatly illuminated. Thus, by coupling this new explanatory power of neural networks with its strong predictive abilities, ANNs promise to be a valuable quantitative tool to evaluate, understand, and predict ecological phenomena.},
+	language = {en},
+	number = {1},
+	urldate = {2020-02-14},
+	journal = {Ecological Modelling},
+	author = {Olden, Julian D and Jackson, Donald A},
+	month = aug,
+	year = {2002},
+	keywords = {Connection weights, Garson's algorithm, Neural Interpretation Diagram, Sensitivity analysis, Statistical models},
+	pages = {135--150},
+	file = {ScienceDirect Snapshot:/home/alex/Zotero/storage/VLU2KBFW/S0304380002000649.html:text/html;ScienceDirect Full Text PDF:/home/alex/Zotero/storage/9TV6AC3D/Olden and Jackson - 2002 - Illuminating the “black box” a randomization appr.pdf:application/pdf}
+}
+
+@article{akhtar_threat_2018,
+	title = {Threat of {Adversarial} {Attacks} on {Deep} {Learning} in {Computer} {Vision}: {A} {Survey}},
+	volume = {6},
+	issn = {2169-3536},
+	shorttitle = {Threat of {Adversarial} {Attacks} on {Deep} {Learning} in {Computer} {Vision}},
+	doi = {10.1109/ACCESS.2018.2807385},
+	abstract = {Deep learning is at the heart of the current rise of artificial intelligence. In the field of computer vision, it has become the workhorse for applications ranging from self-driving cars to surveillance and security. Whereas, deep neural networks have demonstrated phenomenal success (often beyond human capabilities) in solving complex problems, recent studies show that they are vulnerable to adversarial attacks in the form of subtle perturbations to inputs that lead a model to predict incorrect outputs. For images, such perturbations are often too small to be perceptible, yet they completely fool the deep learning models. Adversarial attacks pose a serious threat to the success of deep learning in practice. This fact has recently led to a large influx of contributions in this direction. This paper presents the first comprehensive survey on adversarial attacks on deep learning in computer vision. We review the works that design adversarial attacks, analyze the existence of such attacks and propose defenses against them. To emphasize that adversarial attacks are possible in practical conditions, we separately review the contributions that evaluate adversarial attacks in the real-world scenarios. Finally, drawing on the reviewed literature, we provide a broader outlook of this research direction.},
+	journal = {IEEE Access},
+	author = {Akhtar, Naveed and Mian, Ajmal},
+	year = {2018},
+	keywords = {adversarial attacks, adversarial learning, adversarial perturbation, artificial intelligence, black-box attack, Computational modeling, computer vision, Computer vision, Deep learning, deep learning models, deep neural networks, humanities, learning (artificial intelligence), Machine learning, neural nets, Neural networks, perturbation detection, Perturbation methods, Predictive models, self-driving cars, Task analysis, white-box attack},
+	pages = {14410--14430},
+	file = {IEEE Xplore Full Text PDF:/home/alex/Zotero/storage/6PQZCRXN/Akhtar and Mian - 2018 - Threat of Adversarial Attacks on Deep Learning in .pdf:application/pdf;IEEE Xplore Abstract Record:/home/alex/Zotero/storage/UU2YLEXF/8294186.html:text/html}
+}

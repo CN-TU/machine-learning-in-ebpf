@@ -22,7 +22,7 @@ using namespace std;
 
 static uint64_t hash_fn(const void *k, void *ctx)
 {
-	// This is bad since it only returns 32 bits
+	// XXX: This is bad since it only returns 32 bits
 	return (uint64_t) jhash(k, sizeof(XFSMTableKey), 0);
 }
 
