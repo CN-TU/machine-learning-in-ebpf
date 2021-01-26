@@ -238,6 +238,6 @@ int main(int argc, char *argv[])
 
 	auto final_time = std::chrono::system_clock::now();
 
-	cout << "Ran for " << ((double) (final_time-starttime).count())/1000000000 << "s, processed " << actual_num_processed << " packets" << endl;
+	cout << "Ran for " << ((double) (final_time-starttime).count())/1000000000 << "s, processed " << actual_num_processed << " packets" << endl << flush;
 
 }

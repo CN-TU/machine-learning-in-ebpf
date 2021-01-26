@@ -175,7 +175,7 @@ if opt.run_scenario == "":
 	with virtnet.Manager() as context:
 		run(context)
 elif opt.run_scenario == "just_one_flow":
-	opt.time = 20
+	opt.time = 15
 	opt.store_pcaps = False
 	opt.buffer_size = 100
 	opt.rate = 10

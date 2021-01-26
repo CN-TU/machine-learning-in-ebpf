@@ -36,6 +36,7 @@
 \usepackage[numbers]{natbib}
 \usepackage{subfig}
 \usepackage{tikz}
+\usepackage{float}
 
 \usepackage[nomain, toc, acronym]{glossaries}
 \glsdisablehyper
@@ -112,7 +113,7 @@ eBPF is a new technology which allows dynamically loading pieces of code into th
 
 \section{Introduction}
 
-\subsubsection{eBPF}
+\subsection{eBPF}
 
 eBPF \cite{noauthor_ebpf_2020} is a technology which makes the Linux kernel programmable by enabling the injection of pieces of code at many locations of the kernel code. eBPF can be dynamically injected during runtime and is verified to make sure that it cannot crash and cannot get caught in infinite loops. However, this verification is only possible for programs that are not turing-complete. Thus eBPF programs cannot contain features such as loops of arbitrary length but instead loops must always have a maximum number of iterations. Also backward jumps in the code are generally not allowed. This means eBPF can only be used to implement algorithms which do not require turing-completeness. eBPF programs are usually written in C and are first compiled to eBPF bytecode. Upon injection into the kernel, this eBPF bytecode is verified and dynamically compiled to native code. 
 
@@ -122,13 +123,29 @@ Because eBPF bytecode is compiled to native code, it should generally be as any 
 
 One alternative to using eBPF is using kernel modules. However, a drawback of kernel modules is that they usually cannot be verified for stability and that they have to be compiled for a specific kernel version. Moreover, developing kernel modules is not straightforward and often it is not possible to extend certain functionality in the kernel with a kernel module without changing the kernel itself. Changing the kernel itself makes it necessary to recompile the kernel, which is cumbersome. 
 
-\subsubsection{eBPF for an \gls{ml}-based \gls{ids}}
+To enable reproducibility and to encourage further experimentation by other researchers, we make all the source code and other materials of this work publicly available \footnote{\url{https://github.com/CN-TU/machine-learning-in-ebpf}}.
+
+\subsection{eBPF for an \gls{ml}-based \gls{ids}}
 
 One challenge of using eBPF for \gls{ml} is that it is not turing-complete. However, \gls{ml} algorithms such as \glspl{dt} or \glspl{nn} do not require turing-completeness and can thus be implemented in eBPF. We decise to use \glspl{dt} since they are a simple and effective \gls{ml} method for \glspl{ids} \cite{iglesias_ntarc_2020}. As mentioned in the previous sections, eBPF data structures need some additional processing compared to the classic ones built into C. A question we want to answer in this research is thus the following: Is eBPF faster than a solution as a normal program implemented in user space? The user space program has the disadvantage that all packets have to be passed between the kernel and the program which is slow. The eBPF program has the disadvantage that it makes use of potentially slower data structures. Thus, it is interesting to understand whether in practice eBPF can be faster even for complex programs which make use of data structures frequently. 
 
 We envision an approach which keeps track of each network flow and analyzes each packet in the context of the previous packets of the flow. For example, certain attacks could be detected only when the fourth packet of the network flow containing the attack arrives. Implementing a table which can store flows would not be possible considering the limitation that eBPF is not turing-complete. However, eBPF has certain data structures such as hash tables built-in so that it is possible to remember information about network flows. 
 
-\section{}
+\section{Related work}
+
+\section{Evaluation}
+
+We implement the same \gls{ids} in user space and also in eBPF. The code is completely equivalent except that data structures are different because, as mentioned previously, many normal data structures are not usable in eBPF. Also, some data structures that eBPF has, such as hash maps, are not available in a normal C userspace program by default and thus we use a simple hash map implementation from the Linux kernel for the userspace version. 
+
+For a fair comparison, we emulate a network using Linux network name spaces. For this, we have one server and one client, connected via a switch and configure the links to have no delay in addition to the processing delay caused by the Linux kernel. Furthermore, we set the maximum link speed to be unlimited. The server and the client are connected using \textit{iPerf}. Since the link speed is unlimited, iPerf will sind as fast as possible. The maximum speed is only limited by how fast the computer can process the packets. The \gls{ids} is deployed by opening a raw socket on the network interface of the server. All packets arriving at the server thus pass through the raw socket and are processed by the \gls{ids}. The \gls{ids} is implemented either as a classic userspace program or by using eBPF. 
+
+\begin{figure}[H]
+\includegraphics[width=\columnwidth]{{"figures/comparison_simple"}.pdf}
+\caption{Comparison between the implementation of the \gls{ids} in userspace and the one in eBPF.}
+\label{fig:comparison}
+\end{figure}
+
+\autoref{fig:comparison} shows that the userspace implementation inspects fewer packets per second than the eBPF implementation. The eBPF implementation is 24\% faster than the userspace one. 
 
 %\section*{Acknowledgements}
 %The Titan Xp used for this research was donated by the NVIDIA Corporation.
@@ -136,7 +153,6 @@ We envision an approach which keeps track of each network flow and analyzes each
 \renewcommand*{\bibfont}{\small}
 \bibliographystyle{ieeetr}
 \bibliography{ml_in_ebpf}
-
 
 \end{document}
 \endinput
