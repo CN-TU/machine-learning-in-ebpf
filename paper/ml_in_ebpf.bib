@@ -1,65 +1,23 @@
 
 @inproceedings{ben-yair_ai_2019,
-	address = {New York, NY, USA},
-	series = {{SYSTOR} '19},
 	title = {{AI} \& {eBPF} based performance anomaly detection system},
-	isbn = {978-1-4503-6749-3},
-	url = {https://doi.org/10.1145/3319647.3325842},
-	doi = {10.1145/3319647.3325842},
 	abstract = {We describe means to run eBPF on a production environment for systems inspection. We examine the inspected system outputs in order to train and generate a model for the host. We model the specific application and network traffic usage on the site based on the data collected by eBPF. Our system generates alerts when an anomaly in performance is detected on a specific host. These warnings can be used to discover the root cause for performance problems, cyber-security issues and warn in advance about potential performance peaks.},
-	urldate = {2020-12-21},
-	booktitle = {Proceedings of the 12th {ACM} {International} {Conference} on {Systems} and {Storage}},
-	publisher = {Association for Computing Machinery},
+	booktitle = {{SYSTOR}},
+	publisher = {ACM},
 	author = {Ben-Yair, Ido and Rogovoy, Pavel and Zaidenberg, Nezer},
 	month = may,
 	year = {2019},
-	keywords = {anomaly detection, eBPF, performance},
-	pages = {180}
+	keywords = {anomaly detection, eBPF, performance}
 }
 
 @inproceedings{choe_ebpfxdp_2020,
-	address = {Cham},
-	series = {Lecture {Notes} on {Data} {Engineering} and {Communications} {Technologies}},
 	title = {{eBPF}/{XDP} {Based} {Network} {Traffic} {Visualization} and {DoS} {Mitigation} for {Intelligent} {Service} {Protection}},
-	isbn = {978-3-030-39746-3},
-	doi = {10.1007/978-3-030-39746-3_47},
 	abstract = {Kubernetes is expected to be widely used for intelligent services, leveraging multiple machines working as a cluster. When machines are connected through the internet, they exploit security issues regarding the network such as DoS attacks. We intend to apply eBPF/XDP to monitor and filter the packets for an intelligent service running on a Kubernetes cluster of two physical machines. This paper validates the performance of eBPF/XDP packet filtering against a HTTP get, post request flood DoS attack. Furthermore, we visualize the network status of network interfaces based on the number of incoming packets retrieved by our eBPF/XDP program.},
-	language = {en},
 	booktitle = {Advances in {Internet}, {Data} and {Web} {Technologies}},
-	publisher = {Springer International Publishing},
+	publisher = {Springer},
 	author = {Choe, YoungEun and Shin, Jun-Sik and Lee, Seunghyung and Kim, JongWon},
-	editor = {Barolli, Leonard and Okada, Yoshihiro and Amato, Flora},
 	year = {2020},
-	pages = {458--468},
 	file = {Springer Full Text PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/43HHPU8P/Choe et al. - 2020 - eBPFXDP Based Network Traffic Visualization and D.pdf:application/pdf}
-}
-
-@article{chen_machine_2020,
-	title = {A machine learning approach for load balancing in the {Linux} kernel},
-	url = {https://www.ideals.illinois.edu/handle/2142/107283},
-	abstract = {The default scheduler in the Linux Kernel - Completely Fair Scheduler (CFS) aims to provide 
-fairness and maximized utilization of the processing time. It performs load balancing between cores 
-by looking at the cache locality and CPU utilization of individual processes. However, memory cache 
-and processing time are not the only critical hardware resources shared by processes. Contention 
-due to imbalanced needs for other shared computing resources including memory bandwidth, IO 
-bandwidth, arithmetic operations, etc. may still hinder the overall performance. Traditional logical 
-approaches bear limitations in solving this problem due to complex relationships between resources 
-and performance, especially when resources are shared on different levels on the NUMA and 
-chip multiprocessor (CMP) architectures. This thesis explores the possibility of applying Machine 
-Learning (ML) to implement resource-aware load balancing in the Linux kernel. We propose 
-an approach of applying machine learning to a part of the Linux CFS load balancer by imitation 
-learning. Dynamic tracing of kernel functions with eBPF and kprobes was used for runtime data 
-collection of the system. A Multi-Layer Perceptron (MLP) model was then trained to emulate existing 
-kernel load balancing decisions. We present both floating-point and fixed-point implementations of 
-the model inside the kernel and evaluate their performance. Integration of processors’ Hardware Performance Counters (HPCs) for usages inside the kernel via the Perf Subsystem is studied as a 
-support for future works in implementing resource-aware load balancing.},
-	language = {en},
-	urldate = {2020-12-21},
-	author = {Chen, Jingde},
-	month = may,
-	year = {2020},
-	note = {Accepted: 2020-06-12T21:32:22Z},
-	file = {Snapshot:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/S25756U6/107283.html:text/html}
 }
 
 @article{risso_towards_2018,
@@ -67,36 +25,47 @@ support for future works in implementing resource-aware load balancing.},
 	language = {en},
 	author = {Risso, Fulvio and Tumolo, Massimo},
 	year = {2018},
-	pages = {88},
 	file = {Risso and Tumolo - Towards a faster Iptables in eBPF.pdf:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/SWA2DL7Y/Risso and Tumolo - Towards a faster Iptables in eBPF.pdf:application/pdf}
-}
-
-@misc{noauthor_ebpf_2020,
-	title = {{eBPF} - {Introduction}, {Tutorials} \& {Community} {Resources}},
-	url = {https://ebpf.io/},
-	urldate = {2021-01-22},
-	year = {2020},
-	note = {https://ebpf.io/},
-	file = {eBPF - Introduction, Tutorials & Community Resources:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/83JNNDQC/ebpf.io.html:text/html}
 }
 
 @article{iglesias_ntarc_2020,
 	title = {{NTARC}: {A} {Data} {Model} for the {Systematic} {Review} of {Network} {Traffic} {Analysis} {Research}},
-	volume = {10},
-	copyright = {http://creativecommons.org/licenses/by/3.0/},
-	shorttitle = {{NTARC}},
-	url = {https://www.mdpi.com/2076-3417/10/12/4307},
-	doi = {10.3390/app10124307},
 	abstract = {The increased interest in secure and reliable communications has turned the analysis of network traffic data into a predominant topic. A high number of research papers propose methods to classify traffic, detect anomalies, or identify attacks. Although the goals and methodologies are commonly similar, we lack initiatives to categorize the data, methods, and findings systematically. In this paper, we present Network Traffic Analysis Research Curation (NTARC), a data model to store key information about network traffic analysis research. We additionally use NTARC to perform a critical review of the field of research conducted in the last two decades. The collection of descriptive research summaries enables the easy retrieval of relevant information and a better reuse of past studies by the application of quantitative analysis. Among others benefits, it enables the critical review of methodologies, the detection of common flaws, the obtaining of baselines, and the consolidation of best practices. Furthermore, it provides a basis to achieve reproducibility, a key requirement that has long been undervalued in the area of traffic analysis. Thus, besides reading hard copies of papers, with NTARC, researchers can make use of a digital environment that facilitates queries and reviews over a comprehensive field corpus.},
 	language = {en},
-	number = {12},
 	urldate = {2020-11-04},
 	journal = {Applied Sciences},
 	author = {Iglesias, Félix and Ferreira, Daniel C. and Vormayr, Gernot and Bachl, Maximilian and Zseby, Tanja},
 	month = jan,
 	year = {2020},
-	note = {Number: 12
-Publisher: Multidisciplinary Digital Publishing Institute},
-	keywords = {data curation, meta-analysis, network traffic analysis, reproducible science},
-	pages = {4307}
+	keywords = {data curation, meta-analysis, network traffic analysis, reproducible science}
+}
+
+@inproceedings{sharafaldin_toward_2018,
+	title = {Toward {Generating} a {New} {Intrusion} {Detection} {Dataset} and {Intrusion} {Traffic} {Characterization}},
+	abstract = {Intrusion Detection, IDS Dataset, DoS, Web Attack, Inﬁltration, Brute Force.},
+	language = {en},
+	urldate = {2019-09-10},
+	booktitle = {{ICISSP}},
+	publisher = {SCITEPRESS},
+	author = {Sharafaldin, Iman and Habibi Lashkari, Arash and Ghorbani, Ali A.},
+	year = {2018}
+}
+
+@inproceedings{demoulin_detecting_2019,
+	title = {Detecting {Asymmetric} {Application}-layer {Denial}-of-{Service} {Attacks} {In}-{Flight} with {FineLame}},
+	language = {en},
+	urldate = {2021-01-26},
+	publisher = {USENIX},
+	author = {Demoulin, Henri Maxime and Pedisich, Isaac and Vasilakis, Nikos and Liu, Vincent and Loo, Boon Thau and Phan, Linh Thi Xuan},
+	year = {2019},
+	file = {Full Text PDF:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/BVD2DKPN/Demoulin et al. - 2019 - Detecting Asymmetric Application-layer Denial-of-S.pdf:application/pdf}
+}
+
+@article{van_wieren_signature-based_2019,
+	title = {Signature-{Based} {DDoS} {Attack} {Mitigation}: {Automated} {Generating} {Rules} for   {Extended} {Berkeley} {Packet} {Filter} and  {Express} {Data} {Path}},
+	abstract = {Distributed Denial of Service (DDoS) attacks are malicious attempts to disrupt a service from the target by overwhelming it by network packets. DDoS attacks are continuously rising in size and diversity. In 2018, Netscout reported a peak of 1.7 Tbps in size [1] and Akamai’s annual report of 2018 [2] states that those spikes are still growing with an increasing growth curve. As an example from the beginning of 2018, with the new memcached attacks, attackers are still ﬁnding new ways to perform DDoS attacks. Cloudﬂare is one of the biggest vendors on the market providing solutions the defend against DDoS attacks. Their defending methods include the ﬁltering of malicious packets by generated rules from attack signatures. The extended Berkeley Packet Filter (eBPF) and eXpress Data Path (XDP) form an important part in those defending methods. With the ability to ﬁlter packets at a very high speed, eBPF and XDP prove in existing solutions that it can perform in the ﬁght against DDoS attacks. With eBPF and XDP, malicious packets can be dropped based on rules speciﬁed inside the eBPF program. Studies show that eBPF and XDP are tools that are able to drop packets at higher rates than former tools. However those studies only show this with plain packets and not in the case of an actual DDoS attack. Altough eBPF and XDP are open-source, the tools can not directly be used to mitigate DDoS attacks. In practice a network operator has to know how to use this tools and what the implication of different scenarios can be. Therefore, the overall goal of this study is to research how to use eBPF and XDP to mitigate DDoS attacks and to research how effective the tools can be. A DDoS mitigation system is proposed in this study with the use of eBPF and XDP. With this system a network operator is able to drop packets up to a 100\% accuracy when deep packet layers are considered. The XDP ﬁlter allows higher packet processing speeds than an Iptables ﬁlter with the same rules. The contribution of this study is two-fold. It adds new scientiﬁc ﬁndings on which new studies can build upon and the study can be put in practice by network operators in real network environments.},
+	language = {en},
+	author = {van Wieren, Huub},
+	year = {2019},
+	file = {Wieren - Signature-Based DDoS Attack Mitigation Automated .pdf:/home/max/.zotero/zotero/zzt443zn.default/zotero/storage/8W7W6I53/Wieren - Signature-Based DDoS Attack Mitigation Automated .pdf:application/pdf}
 }
