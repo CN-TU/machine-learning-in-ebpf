@@ -130,6 +130,8 @@ Some researcher have already investigated eBPF based \glspl{ids} or thought abou
 
 One challenge of using eBPF for \gls{ml} is that it is not turing-complete. However, \gls{ml} algorithms such as \glspl{dt} or \glspl{nn} do not require loops in the implementation and thus don't require turing-completeness and can thus be implemented in eBPF. We decide to use \glspl{dt} since tree-based methods are a simple and effective \gls{ml} method for \glspl{ids} \cite{iglesias_ntarc_2020}. As mentioned in the previous sections, eBPF data structures need some additional processing compared to the classic ones built into C. A question we want to answer in this research is thus the following: Is eBPF faster than a solution implemented as a normal program in userspace? The userspace program has the disadvantage that all packets have to be passed between the kernel and the program which is slow. The eBPF program has the disadvantage that it makes use of potentially slower data structures. Thus, it is interesting to understand whether in practice eBPF can be faster even for complex programs which make use of data structures frequently. 
 
+\section{Evaluation}
+
 We envision an approach which keeps track of each network flow and analyzes each packet in the context of the previous packets of the flow. For example, certain attacks could be detected only when the fourth packet of the network flow containing the attack arrives. eBPF has built-in hash tables which allow storing information for each flow, which we use for this purpose. As the key we use the classic \textit{five tuple} of protocol type, source and destination IP and source and destination port. 
 
 %["sourceTransportPort", "destinationTransportPort", "protocolIdentifier", "accumulate(ipTotalLength)", "accumulate(_interPacketTimeNanoseconds)", "accumulate(flowDirection)"]
@@ -139,8 +141,6 @@ As features we use the source and destination port, the protocol identifier (UDP
 We train the decision tree using \textit{scikit-learn} on the popular CIC-IDS-2017 dataset \cite{sharafaldin_toward_2018} with a maximum depth of 10 and a maximum number of leaves of 1000 using a train/test split of 2:1, which achieves an accuracy of 99\% on the testing dataset after training. 
 
 To enable reproducibility and to encourage further experimentation by other researchers, we make all the source code and other materials of this work publicly available \footnote{\url{https://github.com/CN-TU/machine-learning-in-ebpf}}.
-
-\section{Evaluation}
 
 We implement the same \gls{ids} in userspace and also in eBPF and use the previously trained \gls{dt}. The code is completely equivalent except that data structures are different because, as mentioned previously, many normal data structures are not usable in eBPF. Also, some data structures that eBPF has, such as hash maps, are not available in a normal C userspace program by default and thus we use a simple hash map implementation from the Linux kernel for the userspace version. 
 
