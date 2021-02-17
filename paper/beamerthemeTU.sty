@@ -1,0 +1,77 @@
+%
+% TU Beamer theme
+%
+% v1.0: 12.10.2014
+%
+
+\RequirePackage[utf8]{inputenc}	%windows
+%\RequirePackage[T1]{fontenc}
+\RequirePackage[english]{babel}
+\RequirePackage{lmodern}
+
+\RequirePackage{etex}
+\RequirePackage{etoolbox}
+\usepackage{calc}
+
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+
+%\RequirePackage{tikz}
+%\usetikzlibrary{calc}
+
+\RequirePackage{hyperref}
+\hypersetup{
+	final,
+	hyperindex=true,
+	pdfpagemode=FullScreen,	% show presentation in full screen mode
+	breaklinks
+}
+
+\usefonttheme{TU}
+\usecolortheme{TU}
+\useinnertheme{TU}
+\useoutertheme{TU}
+
+
+
+% Command to enter session number
+%\newcommand{\session}[1]{\def\insertsession{#1}}
+
+% Change \and for author and institute
+\def\beamer@andinst{\\[.2\baselineskip]}
+\def\beamer@andtitle{\unskip, }
+
+
+
+%
+% The \author command (copied from beamerbasetitle.sty)
+% Changed to add command \insertauthorwithemail
+%
+\def\author{\@dblarg\beamer@author}
+\long\def\beamer@author[#1]#2{%
+  \def\insertauthor{\def\inst{\beamer@insttitle}\def\and{\beamer@andtitle}\let\email=\@gobble#2}%
+  \def\insertauthorwithemail{\def\inst{\beamer@insttitle}\def\and{\beamer@andtitlemail}\def\email{\beamer@emailtitle}#2}
+ \def\beamer@shortauthor{#1}%
+ \ifbeamer@autopdfinfo%
+    \def\beamer@andstripped{}%
+    \beamer@stripands#2 \and\relax
+    {\let\inst=\@gobble\let\thanks=\@gobble\let\email=\@gobble\def\and{, }\hypersetup{pdfauthor={\beamer@andstripped}}}
+ \fi%
+}
+
+%\def\beamer@stripands#1 \and#2\relax{%
+%  \def\beamer@temp{#2}%
+%  \ifx\beamer@temp\@empty
+%    \expandafter\def\expandafter\beamer@andstripped\expandafter{\beamer@andstripped#1}
+%  \else
+%    \expandafter\def\expandafter\beamer@andstripped\expandafter{\beamer@andstripped#1, }
+%    \beamer@stripands#2\relax%
+%  \fi
+%}
+
+%\author{}
+
+%\def\beamer@emailtitle#1{,\quad\href{mailto:#1}{#1}}
+\def\beamer@emailtitle#1{,\quad#1}
+\def\beamer@andtitlemail{\\[.1\baselineskip]}
+

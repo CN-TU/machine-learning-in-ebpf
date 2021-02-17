@@ -1,0 +1,198 @@
+
+%
+% Beispieldokument für TU beamer theme
+%
+% v1.0: 12.10.2014
+% 
+\documentclass[xcolor={dvipsnames}]{beamer}
+\usetheme{TU}
+
+\setbeamertemplate{caption}[numbered]
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{subfig}
+% Macro to make entire row bold from https://tex.stackexchange.com/questions/309833/format-whole-row-of-table-as-bold
+\newcommand\setrow[1]{\gdef\rowmac{#1}#1\ignorespaces}
+\newcommand\clearrow{\global\let\rowmac\relax}
+\clearrow
+
+\title{A flow-based IDS using Machine Learning in eBPF}
+
+\author[M. Bachl et al.]{%
+	\underline{Maximilian Bachl}\email{maximilian.bachl@tuwien.ac.at} \and Joachim Fabini \and Tanja Zseby
+}
+
+\institute{%
+	Technische Universität Wien, Vienna, Austria
+}
+
+%Kann angepasst werden, wie es beliebt. Entweder das Datum der Präsentation oder das Datum der aktuellen Präsentations-Version.
+%\date[\the\day.\the\month.\the\year]{\today}
+\date[February 16, 2021]{February 16, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\begin{frame}{Packet sending/receiving in Linux}
+\centering
+\includegraphics[width=0.8\columnwidth]{{"figures/Linux networking"}.png}
+
+\tiny Illustration from \url{https://conferences.sigcomm.org/sigcomm/2019/files/slides/paper_2_4.pptx}
+\end{frame}
+
+\begin{frame}{Packet sending/receiving in Linux: Insight}
+\begin{block}{Insight:}
+Passing a packet from the network interface to the application is pretty complicated and computationally expensive.
+\end{block}
+\end{frame}
+
+\begin{frame}{Solution}
+\begin{itemize}
+\item Filter unwanted packets immediately after receiving them
+\item This saves a lot of computational resources 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{BPF (Berkeley Packet Filter)}
+\begin{itemize}
+\item Programs tell operating system (OS) to filter packets for them
+\item Programs give OS a mini program with instructions on what to filter
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: tcpdump}
+\begin{itemize}
+\item tcpdump records relevant packets
+\item Example: \texttt{tcpdump icmp and dst 51.254.96.253}
+\item tcpdump gives the filter as BPF program to the OS
+\item This makes filtering more efficient
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Use BPF everywhere in the OS kernel!}
+\begin{block}{Insight:}
+BPF could be used for modifying the OS dynamically! 
+\end{block}
+\end{frame}
+
+\begin{frame}{eBPF}
+\begin{itemize}
+\item Make BPF more powerful
+\item Allow more locations in the OS to be customized with eBPF
+\item Any C program can be compiled to eBPF
+\item eBPF programs are verified before being loaded into the OS kernel:
+\begin{itemize}
+\item eBPF programs cannot crash
+\item eBPF programs cannot run infinitely
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{eBPF -- Disadvantages}
+\begin{itemize}
+\item eBPF cannot be turing complete
+\item If eBPF were turing complete you couldn't verify that programs can't crash
+\item Specifically: eBPF cannot use for-loops of arbitrary length and while-loops
+\item eBPF uses special data structures to make sure that no out-of-bounds accesses can happen
+\end{itemize}
+\end{frame}
+
+\begin{frame}{eBPF for machine learning}
+\begin{itemize}
+\item Training/deploying neural networks doesn't require loops of arbitrary length
+\item Training/deploying decision trees/random forests doesn't require loops either
+\end{itemize}
+\pause
+\begin{block}{Insight:}
+Can use machine learning with eBPF in the kernel
+\end{block}
+\end{frame}
+
+\section{Concept}
+\begin{frame}{eBPF based IDS}
+\begin{itemize}
+\item Use 5 tuple to identify flows
+\item Create hashmap to store flow info (hashmaps are built into eBPF)
+\item Features: the source and destination port, the protocol identifier (UDP, TCP, ICMP etc.), the packet length, the time since the last packet of the flow and the direction of the packet
+\item Also use the mean of the feature values as well as mean absolute deviation
+\end{itemize}
+\end{frame}
+
+\begin{frame}{eBPF based IDS -- limitations}
+\begin{itemize}
+\item eBPF doesn't support floating point numbers
+\item Alternative to floating point is fixed point arithmetics. Use 16 bits for the part behind the dot and 48 for the part before the dot
+\item Also, it doesn't support square roots etc. Thus can't use standard deviation but must use mean absolute deviation
+\end{itemize}
+\end{frame}
+
+\begin{frame}{eBPF based IDS -- implementation}
+\begin{itemize}
+\item Train decision tree in sklearn using CIC-IDS-2017
+\item Limit to depth 10 and a maximum of 1000 leaves
+\item Achieves accuracy of 99\%
+\end{itemize}
+\end{frame}
+
+\section{Evaluation}
+\begin{frame}{Setup}
+\begin{itemize}
+\item Everything on one machine using Linux network namespaces
+\item Two hosts connected via a switch
+\item iPerf for bulk transfer
+\item eBPF-based IDS listens on raw socket for all packets on the server 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evaluation method}
+\begin{itemize}
+\item Run same C program once as eBPF and once as userspace program
+\item eBPF program is identical to userspace program except for the data structures
+\item Run each for 10 seconds
+\item Compare which solution could process more packets
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results}
+\begin{table}[h]
+\caption{The maximum number of packets which each implementation can process.} \label{tab:comparison}
+\centering
+\begin{tabular}{rrr} \toprule
+& Userspace & eBPF \\ \midrule
+packets/s & 123\,800 & 153\,290 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Interpretation}
+\begin{itemize}
+\item eBPF is 24\% faster than the userspace program
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+\item It seems obvious that eBPF is faster
+\item But it uses different data structures
+\item eBPF can't use normal arrays because they can have out-of-bounds accesses
+\item eBPF's data structures have an overhead compared to native C ones
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Future work}
+\begin{itemize}
+\item What's the point at which the overhead from eBPF's data structures becomes larger than the benefit?
+\item Can random forests with many trees and thousands of leaves still be efficient?
+\item Can deep neural networks still be efficient when using eBPF's data structures?
+\end{itemize}
+\end{frame}
+
+
+\makelastslide
+
+\end{document}

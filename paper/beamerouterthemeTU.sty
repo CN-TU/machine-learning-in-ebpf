@@ -1,0 +1,51 @@
+%
+% Outer theme for TU Beamer theme
+%
+% v1.0: 12.10.2014
+%
+
+
+\mode<presentation>
+
+% ------------------------------------------------------------------------
+% *** HEADLINE ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{headline}{%
+%	\ifnum\c@framenumber=1{}\else%
+    	\begin{beamercolorbox}[wd=\paperwidth,ht=19pt,dp=15pt,leftskip=0.3cm,rightskip=0.3cm]{headline}
+% 		\begin{beamercolorbox}[wd=\paperwidth,ht=30pt,dp=15pt,leftskip=0.3cm,rightskip=0.3cm]{headline}
+%			\parbox[c]{4cm}{\includegraphics[height=.65cm]{logos/TU_Logo}}
+%			\hfill
+			\usebeamercolor[fg]{frametitle}\usebeamerfont{headline}
+			\insertsection %\raisebox{1.2pt}{\bfseries}
+	\end{beamercolorbox}%
+%	\fi%
+}
+
+% ------------------------------------------------------------------------
+% *** FOOTLINE ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{footline}{
+%	\ifnum\c@framenumber=1%
+%	\else
+		\begin{beamercolorbox}[wd=.94\paperwidth,ht=3.5ex,dp=2ex,
+			leftskip=0.3cm,rightskip=0.3cm]{footline}
+				\insertshortdate
+				\hfill \inserttitle{} \hfill
+%				\hfill \inserttitle{} by \insertshortauthor{} \hfill
+				\insertframenumber
+		\end{beamercolorbox}%
+%	\fi
+}
+
+% ------------------------------------------------------------------------
+% *** FRAMETITLE ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{frametitle}{%
+	\parbox[t][.35cm][b]{\textwidth}{%
+		\usebeamerfont*{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+		\quad%
+		\usebeamerfont*{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle%
+	}%
+}%
+

@@ -1,0 +1,69 @@
+%
+% Color theme for TU Beamer theme
+%
+% v1.0: 12.10.2014
+%
+
+
+%\mode<presentation>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%     Color Definition
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{TU_blue}{RGB}{0, 102, 153}
+%\definecolor{TU_blue}{RGB}{14, 108, 177}
+
+\definecolor{TU_background}{RGB}{222, 231, 236} % graublauer Hintergrund
+
+\definecolor{TU_gray}{RGB}{102, 102, 102}
+
+\definecolor{new_red}{RGB}{186, 18, 43}
+\definecolor{new_gray}{RGB}{176, 176, 176}
+\definecolor{new_yellow}{RGB}{252, 204, 71}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%     Color Setting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setbeamercolor{title}{fg=white}%
+\setbeamercolor{subtitle}{fg=white}%
+
+\setbeamercolor{frametitle}{fg=TU_blue}
+\setbeamercolor{footline}{fg=TU_blue}
+%\setbeamercolor{session}{fg=TU_blue}
+
+
+
+
+\setbeamercolor{item}{parent=local structure}
+\setbeamercolor{subitem}{parent=item, fg=gray}
+\setbeamercolor{subsubitem}{parent=subitem}
+
+\setbeamercolor{enumerate item}{parent=item}
+\setbeamercolor{enumerate subitem}{parent=subitem}
+\setbeamercolor{enumerate subsubitem}{parent=subsubitem}
+
+\setbeamercolor{itemize item}{parent=item}
+\setbeamercolor{itemize subitem}{parent=subitem}
+\setbeamercolor{itemize subsubitem}{parent=subsubitem}
+
+
+\setbeamercolor{structure}{fg=TU_blue}
+\setbeamercolor{alerted text}{fg=new_red}
+
+
+
+% blocks
+% -------------------
+\setbeamercolor{block title}{fg=white,bg=TU_blue}
+\setbeamercolor{block body}{fg=black,bg=TU_background}
+
+\setbeamercolor{block title alerted}{use=alerted text,fg=white,bg=new_red}
+\setbeamercolor{block body alerted}{fg=black, use=block title alerted, bg=new_red!25}
+
+\setbeamercolor{block title example}{fg=white,bg=TU_blue}
+\setbeamercolor{block body example}{fg=black,bg=TU_background}
+
+
+%\mode<all>

@@ -1,0 +1,104 @@
+%
+% Inner theme for TU Beamer theme
+%
+% v1.0: 12.10.2014
+%
+
+
+\mode<presentation>
+
+
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{sidebar right}{} % navigation symbols are placed here by default
+\setbeamertemplate{sidebar left}{}
+
+
+\setbeamersize{text margin left=25pt}
+\setbeamersize{text margin right=45pt}
+
+
+% ------------------------------------------------------------------------
+% *** BACKGROUND ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{background canvas}{%
+	\ifnum\c@framenumber=0%
+		\includegraphics{logos/HintergrundTitel}%
+	\else%
+		\ifnum\c@framenumber=\inserttotalframenumber
+			\includegraphics{logos/HintergrundTitel}%
+		\else%
+			\includegraphics[width=\paperwidth,height=\paperheight]{logos/HintergrundFolien}%
+		\fi%
+    \fi%
+}%
+
+
+
+% ------------------------------------------------------------------------
+% *** TITLE PAGE ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{title page}
+{%
+	\usebeamercolor[fg]{title}%
+	\vspace*{3.5cm}%
+	\parbox[c][.3\textheight][c]{\textwidth}{%
+			\centering%
+			\usebeamerfont{title}%
+			\inserttitle%
+		}\\%
+		\vspace*{1cm}%
+		\parbox[c]{\textwidth}{%
+			\usebeamerfont{author}\insertauthor\\[.5\baselineskip]%
+			\usebeamerfont{institute}\insertinstitute%
+		}%
+	\addtocounter{framenumber}{-1}%
+}%
+% redefine \maketitle to set option [plain]
+\renewcommand{\maketitle}{%
+	\ifbeamer@inframe \titlepage%
+	\else \frame[plain]{\titlepage}%
+	\fi%
+}
+
+% ------------------------------------------------------------------------
+% *** LAST PAGE ***
+% ------------------------------------------------------------------------
+\setbeamertemplate{last page}{%
+	\usebeamercolor[fg]{title}%
+	\vspace*{.3\paperheight}
+	\parbox[c][.7\paperheight][c]{\textwidth}{
+		\parbox[c][.25\paperheight][c]{\textwidth}{%
+			\centering
+			\usebeamerfont{title}%
+			\inserttitle
+		}\\
+		\parbox[c][.3\paperheight][b]{\textwidth}{%
+			\usebeamerfont{author}\insertauthorwithemail\\[.5\baselineskip]%
+			\usebeamerfont{institute}\insertinstitute%
+		}
+	}
+}%
+\newcommand{\makelastslide}{%
+	\ifbeamer@inframe \usebeamertemplate{last page}
+	\else\frame[plain]{\usebeamertemplate{last page}}
+	\fi
+}
+
+
+% ------------------------------------------------------------------------
+% *** OTHER SETTINGS ***
+% ------------------------------------------------------------------------
+
+% Itemize items
+% ===================
+\setbeamertemplate{itemize item}[square]
+\setbeamertemplate{itemize subitem}[square]
+\setbeamertemplate{itemize subsubitem}[square]
+
+
+% Block shape
+% ===================
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+
