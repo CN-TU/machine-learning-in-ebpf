@@ -18,7 +18,7 @@ import virtnet
 import statistics
 import argparse
 
-
+time_offset = 10
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bytes_to_capture', type=int, default=100)
@@ -30,6 +30,7 @@ parser.add_argument('--cport', type=int, default=9000)
 parser.add_argument('--buffer_size', type=int, default=10)
 parser.add_argument('--run_scenario', type=str, default="")
 parser.add_argument('--store_pcaps', action='store_true')
+parser.add_argument('--n_runs', type=int, default=10)
 
 opt = parser.parse_args()
 print(opt)
@@ -109,8 +110,7 @@ def run(vnet, prefix=""):
 
 		server_popen = hosts[1].Popen("iperf3 -V -4 -s".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time-5}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		# ebpf_popen = hosts[1].Popen(f"python3 ebpf_wrapper.py {opt.time-1}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		ebpf_popen = hosts[1].Popen(f"./ebpf_wrapper {opt.time}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 		os.environ["file_name_for_logging"] = f"pcaps/{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.txt"
 		if opt.store_pcaps:
@@ -121,11 +121,9 @@ def run(vnet, prefix=""):
 			tcpdump_sender_popens.append(hosts[0].Popen(f"/usr/sbin/tcpdump -s {opt.bytes_to_capture} -i eth0 -w pcaps/sender_{prefix}_tcp_port{opt.cport+10}_{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.pcap tcp and dst port {opt.cport} or src port {opt.cport}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE))
 			tcpdump_receiver_popens.append(hosts[1].Popen(f"/usr/sbin/tcpdump -s {opt.bytes_to_capture} -i eth0 -w pcaps/receiver_{prefix}_tcp_port{opt.cport+10}_{opt.qdisc}_{opt.delay}_{opt.rate}_{opt.time}_{start_time}.pcap tcp and dst port {opt.cport} or src port {opt.cport}".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE))
 
-		client_popen = hosts[0].Popen(f"iperf3 -V -4 -t {opt.time} --cport {opt.cport} -c host1".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		client_popen = hosts[0].Popen(f"iperf3 -V -4 -t {opt.time+time_offset} --cport {opt.cport} -c host1".split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		# ebpf_popen = hosts[1].Popen(["bash","-c",f"./ebpf_wrapper {opt.time-1}"])
-
-		time.sleep(opt.time)
+		time.sleep(opt.time+time_offset)
 
 		client_popen.terminate()
 		out, err = client_popen.stdout.read(), client_popen.stderr.read()
@@ -149,6 +147,7 @@ def run(vnet, prefix=""):
 			print("ebpf out", out.decode("utf-8"))
 		if err:
 			print("ebpf err", err.decode("utf-8"))
+		ebpf_out = out
 
 		if opt.store_pcaps:
 			for tcpdump_sender_popen in tcpdump_sender_popens:
@@ -169,18 +168,36 @@ def run(vnet, prefix=""):
 
 			subprocess.check_output("chmod -R o+rw pcaps".split())
 
-		return client_out.decode("utf-8"), start_time
+		return client_out.decode("utf-8"), ebpf_out.decode("utf-8"), start_time
 
 if opt.run_scenario == "":
 	with virtnet.Manager() as context:
 		run(context)
 elif opt.run_scenario == "just_one_flow":
-	opt.time = 15
+	opt.time = 10
 	opt.store_pcaps = False
 	opt.buffer_size = 100
 	opt.rate = 10
 	opt.delay = 10
-
 	opt.qdisc = "fq"
-	with virtnet.Manager() as context:
-		client_output, timestamp = run(context, "just_one_flow")
+
+
+	collected_packets_processed = []
+	while True:
+		with virtnet.Manager() as context:
+			client_output, ebpf_output, timestamp = run(context, "just_one_flow")
+
+		split_ebpf_out = ebpf_output.split("\n")
+		try:
+			packets_processed = int(split_ebpf_out[1].split(" ")[-2])/opt.time
+			print("packets_processed", packets_processed)
+
+			collected_packets_processed.append(packets_processed)
+		except IndexError as e:
+			print("Error occurred", e)
+		if len(collected_packets_processed) >= opt.n_runs:
+			break
+
+	print("collected_packets_processed", collected_packets_processed)
+	print("mean", statistics.mean(collected_packets_processed))
+	print("stdev", statistics.pstdev(collected_packets_processed))

@@ -139,20 +139,21 @@ We envision an approach which keeps track of each network flow and analyzes each
 
 As features we use the source and destination port, the protocol identifier (UDP, TCP, ICMP etc.), the packet length, the time since the last packet of the flow and the direction of the packet (from sender to receiver or vice versa) because these features have proven useful for network traffic analysis \cite{iglesias_ntarc_2020}. Additionally we include the mean of the packet size, the time since the last packet and the direction for all packets received in the flow so far. Furthermore, also the mean absolute deviation is computed for these three features, since the standard deviation cannot be computed due to the absence of advanced arithmetic operations in eBPF such as the square root operation.  A problem is that eBPF doesn't allow floating point operations but only integers. We thus implement the decision tree using fixed point arithmetic using 64 bit signed integers. We use 16 bits for the part after the fixed point.
 
-We train the decision tree using \textit{scikit-learn} on the popular CIC-IDS-2017 dataset \cite{sharafaldin_toward_2018} with a maximum depth of 10 and a maximum number of leaves of 1000 using a train/test split of 2:1, which achieves an accuracy of 99\% on the testing dataset after training. 
+We use the popular CIC-IDS-2017 dataset \cite{sharafaldin_toward_2018}. We train the decision tree using \textit{scikit-learn} with a maximum depth of 10 and a maximum number of leaves of 1000 using a train/test split of 2:1, which achieves an accuracy of 99\% on the testing dataset after training. This accuracy is comparable to the accuracy achieved in related work \cite{hartl_explainability_2020}. 
 
 To enable reproducibility and to encourage further experimentation by other researchers, we make all the source code and other materials of this work publicly available \footnote{\url{https://github.com/CN-TU/machine-learning-in-ebpf}}.
 
 We implement the same \gls{ids} in userspace and also in eBPF and use the previously trained \gls{dt}. The code is completely equivalent except that data structures are different because, as mentioned previously, many normal data structures are not usable in eBPF. Also, some data structures that eBPF has, such as hash maps, are not available in a normal C userspace program by default and thus we use a simple hash map implementation from the Linux kernel for the userspace version. 
 
-We emulate a network using Linux network name spaces. For this, we have one server and one client, connected via a switch and configure the links to have no delay in addition to the delay caused by the Linux kernel for forwarding the packets. Furthermore, we set the maximum link speed to be unlimited. The server and the client are connected using \textit{iPerf}. Since the link speed is unlimited, iPerf will sind as fast as possible. The maximum speed is only limited by how fast the computer can process the packets. The \gls{ids} is deployed by opening a raw socket on the network interface of the server. All packets passing through the server thus pass through the raw socket and are processed by the \gls{ids}. The \gls{ids} is implemented either as a classic userspace program or by using eBPF and run after one another (not at the same time). Both implementations are run for 10\,s. 
+We emulate a network using Linux network name spaces. For this, we have one server and one client, connected via a switch and configure the links to have no delay in addition to the delay caused by the Linux kernel for forwarding the packets. Furthermore, we set the maximum link speed to be unlimited. The server and the client are connected using \textit{iPerf}. Since the link speed is unlimited, iPerf will sind as fast as possible. The maximum speed is only limited by how fast the computer can process the packets. The \gls{ids} is deployed by opening a raw socket on the network interface of the server. All packets passing through the server thus pass through the raw socket and are processed by the \gls{ids}. The \gls{ids} is implemented either as a classic userspace program or by using eBPF and run after one another (not at the same time). Both implementations are run for 10\,s. Instead of deploying the \gls{ids} on an end host, it can also be deployed on a router or switch, which runs a recent Linux version and thus can run eBPF. 
 
 \begin{table}[h]
-\caption{The maximum number of packets which each implementation can process.} \label{tab:comparison}
+\caption{Maximum number of packets each implementation can process. Results averaged over 10 runs each.} \label{tab:comparison}
 \centering
-\begin{tabular}{rrr} \toprule
-& Userspace & eBPF \\ \midrule
-packets/s & 123\,800 & 153\,290 \\
+\begin{tabular}{rrrrr} \toprule
+& \multicolumn{2}{c}{Userspace} & \multicolumn{2}{c}{eBPF} \\ 
+& Mean & SD & Mean & SD \\\midrule
+packets/s & 125\,420 & 2627 & 152\,274 & 1201 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -163,7 +164,7 @@ packets/s & 123\,800 & 153\,290 \\
 %\label{fig:comparison}
 %\end{figure}
 
-\autoref{tab:comparison} shows that the userspace implementation inspects fewer packets per second (123800) than the eBPF implementation (153290). The eBPF implementation is thus 24\% faster than the userspace one. 
+\autoref{tab:comparison} shows that the userspace implementation inspects fewer packets per second (125420) than the eBPF implementation (152274). The eBPF implementation is thus more than 20\% faster than the userspace one. 
 
 \section{Discussion}
 
