@@ -33,39 +33,6 @@ static bool equal_fn(const void *a, const void *b, void *ctx)
 	return as->l4_proto == bs->l4_proto && as->ip_src == bs->ip_src && as->ip_dst == bs->ip_dst && as->src_port == bs->src_port && as->dst_port == bs->dst_port;
 }
 
-// int open_raw_sock(const char *name)
-// {
-//   struct sockaddr_ll sll;
-//   int sock;
-
-//   sock = socket(PF_PACKET, SOCK_RAW | SOCK_CLOEXEC, htons(ETH_P_ALL));
-//   if (sock < 0) {
-//     fprintf(stderr, "cannot create raw socket\n");
-//     return -1;
-//   }
-
-//   /* Do not bind on empty interface names */
-//   if (!name || *name == '\0')
-//     return sock;
-
-//   memset(&sll, 0, sizeof(sll));
-//   sll.sll_family = AF_PACKET;
-//   sll.sll_ifindex = if_nametoindex(name);
-//   if (sll.sll_ifindex == 0) {
-//     fprintf(stderr, "Resolving device name to index: %s\n", strerror(errno));
-//     close(sock);
-//     return -1;
-//   }
-//   sll.sll_protocol = htons(ETH_P_ALL);
-//   if (bind(sock, (struct sockaddr *)&sll, sizeof(sll)) < 0) {
-//     fprintf(stderr, "bind to %s: %s\n", name, strerror(errno));
-//     close(sock);
-//     return -1;
-//   }
-
-//   return sock;
-// }
-
 #include <unistd.h>
 #include <fcntl.h>
 bool set_blocking_mode(int socket)

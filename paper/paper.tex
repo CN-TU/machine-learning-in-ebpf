@@ -99,18 +99,6 @@ firstname.lastname@tuwien.ac.at}}
 eBPF is a new technology which allows dynamically loading pieces of code into the Linux kernel. It can greatly speed up networking since it enables the kernel to process certain packets without the involvement of a userspace program. So far eBPF has been used for simple packet filtering applications such as firewalls or Denial of Service protection. We show that it is possible to develop a flow based network intrusion detection system based on machine learning entirely in eBPF. Our solution uses a decision tree and decides for each packet whether it is malicious or not, considering the entire previous context of the network flow. We achieve a performance increase of over 20\% compared to the same solution implemented as a userspace program. 
 \end{abstract}
 
-%%
-%% The abstract is a short summary of the work to be presented in the
-%% article.
-%\begin{abstract}
-%  A clear and well-documented \LaTeX\ document is presented as an
-%  article formatted for publication by ACM in a conference proceedings
-%  or journal publication. Based on the ``acmart'' document class, this
-%  article presents and explains many of the common variations, as well
-%  as many of the formatting elements an author may use in the
-%  preparation of the documentation of their work.
-%\end{abstract}
-
 \maketitle
 
 \section{Introduction}
@@ -135,8 +123,6 @@ One challenge of using eBPF for \gls{ml} is that it is not turing-complete. Howe
 
 We envision an approach which keeps track of each network flow and analyzes each packet in the context of the previous packets of the flow. For example, certain attacks could be detected only when the fourth packet of the network flow containing the attack arrives. eBPF has built-in hash tables which allow storing information for each flow, which we use for this purpose. As the key we use the classic \textit{five tuple} of protocol type, source and destination IP and source and destination port. 
 
-%["sourceTransportPort", "destinationTransportPort", "protocolIdentifier", "accumulate(ipTotalLength)", "accumulate(_interPacketTimeNanoseconds)", "accumulate(flowDirection)"]
-
 As features we use the source and destination port, the protocol identifier (UDP, TCP, ICMP etc.), the packet length, the time since the last packet of the flow and the direction of the packet (from sender to receiver or vice versa) because these features have proven useful for network traffic analysis \cite{iglesias_ntarc_2020}. Additionally we include the mean of the packet size, the time since the last packet and the direction for all packets received in the flow so far. Furthermore, also the mean absolute deviation is computed for these three features, since the standard deviation cannot be computed due to the absence of advanced arithmetic operations in eBPF such as the square root operation.  A problem is that eBPF doesn't allow floating point operations but only integers. We thus implement the decision tree using fixed point arithmetic using 64 bit signed integers. We use 16 bits for the part after the fixed point.
 
 We use the popular CIC-IDS-2017 dataset \cite{sharafaldin_toward_2018}. We train the decision tree using \textit{scikit-learn} with a maximum depth of 10 and a maximum number of leaves of 1000 using a train/test split of 2:1, which achieves an accuracy of 99\% on the testing dataset after training. This accuracy is comparable to the accuracy achieved in related work \cite{hartl_explainability_2020}. 
@@ -158,20 +144,11 @@ packets/s & 125\,420 & 2627 & 152\,274 & 1201 \\
 \end{tabular}
 \end{table}
 
-%\begin{figure}[H]
-%\includegraphics[width=\columnwidth]{{"figures/comparison_simple"}.pdf}
-%\caption{Comparison between the implementation of the \gls{ids} in userspace and the one in eBPF.}
-%\label{fig:comparison}
-%\end{figure}
-
 \autoref{tab:comparison} shows that the userspace implementation inspects fewer packets per second (125420) than the eBPF implementation (152274). The eBPF implementation is thus more than 20\% faster than the userspace one. 
 
 \section{Discussion}
 
 An interesting consideration is that for complex \gls{ml} models, at some point the overhead from using eBPF's special data structures becomes larger than the benefit that eBPF confers. For example, interesting future work would be to test whether \glspl{rf} or deep \glspl{nn} can also achieve a performance advantage when implemented in eBPF. In this work, however, we could show that for a simple decision tree model, eBPF provides a significant performance advantage. 
-
-%\section*{Acknowledgements}
-%The Titan Xp used for this research was donated by the NVIDIA Corporation.
 
 \renewcommand*{\bibfont}{\small}
 \bibliographystyle{ieeetr}

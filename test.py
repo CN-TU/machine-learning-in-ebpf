@@ -9,8 +9,6 @@ import io
 import time
 import math
 import signal
-import numpy as np
-import fnmatch
 sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 import subprocess
