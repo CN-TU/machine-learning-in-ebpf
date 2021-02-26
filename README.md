@@ -7,7 +7,7 @@ Requires Linux kernel >= 5.3 because 5.3 adds limited support for loops is eBPF.
 
 Tested with Python 3.7.9; Python 3.8 or newer does not seem to work. Requires the py-virtnet 1.0.1 (Install with ```sudo pip3.7 install py-virtnet```).
 
-Compiled on g++ 10.2.1. 
+Compiled with g++ 10.2.1. 
 
 You'll need the bcc library, which can be installed with ```sudo apt install bcc``` on Debian. 
 
