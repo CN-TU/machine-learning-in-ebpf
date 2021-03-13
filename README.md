@@ -5,7 +5,7 @@ This repository contains the code for the upcoming paper *A flow-based IDS using
 
 Requires Linux kernel >= 5.3 because 5.3 adds limited support for loops is eBPF. 
 
-Tested with Python 3.7.9; Python 3.8 or newer does not seem to work. Requires the py-virtnet 1.0.1 (Install with ```sudo pip3.7 install py-virtnet```).
+Tested with Python 3.7.9; Python 3.8 or newer does not seem to work. Requires py-virtnet 1.0.1 (Install with ```sudo pip3.7 install py-virtnet```).
 
 Compiled with g++ 10.2.1. 
 
