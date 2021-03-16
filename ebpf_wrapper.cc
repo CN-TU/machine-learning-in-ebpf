@@ -51,7 +51,7 @@ bool set_blocking_mode(int socket)
 
 double time_to_run;
 const char interface[] = "eth0";
-string prefix_path = "/home/max/repos/adversarial-recurrent-ids/runs/Dec29_19-15-36_hyperion_0_3";
+string prefix_path = "./decision_tree/Dec29_19-15-36_hyperion_0_3";
 
 std::vector<int64_t> read_file(string filename)
 {
