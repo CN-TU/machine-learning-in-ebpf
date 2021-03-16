@@ -51,7 +51,7 @@ bool set_blocking_mode(int socket)
 
 double time_to_run;
 const char interface[] = "eth0";
-string prefix_path = "./decision_tree/Dec29_19-15-36_hyperion_0_3";
+string prefix_path = "./decision_tree/Dec29_19-15-36_hyperion_0_3/";
 
 std::vector<int64_t> read_file(string filename)
 {
@@ -78,11 +78,11 @@ int main(int argc, char *argv[])
 	assert(argc >= 2);
 	sscanf(argv[1],"%lf",&time_to_run);
 
-	vector<int64_t> children_left = read_file(prefix_path + "_childrenLeft");
-	vector<int64_t> children_right = read_file(prefix_path + "_childrenRight");
-	vector<int64_t> value = read_file(prefix_path + "_value");
-	vector<int64_t> feature = read_file(prefix_path + "_feature");
-	vector<int64_t> threshold = read_file(prefix_path + "_threshold");
+	vector<int64_t> children_left = read_file(prefix_path + "/childrenLeft");
+	vector<int64_t> children_right = read_file(prefix_path + "/childrenRight");
+	vector<int64_t> value = read_file(prefix_path + "/value");
+	vector<int64_t> feature = read_file(prefix_path + "/feature");
+	vector<int64_t> threshold = read_file(prefix_path + "/threshold");
 
 	#ifndef USERSPACE
 
