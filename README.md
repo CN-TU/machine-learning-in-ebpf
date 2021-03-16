@@ -25,3 +25,10 @@ Moreover you need the bcc headers, which can be installed with ```sudo apt insta
     
     sudo python3.7 test.py --run_scenario just_one_flow
 
+## Train a decision tree
+
+To train a decision tree, check out the repository [decision_tree branch of the adversarial-recurrent-ids repository](https://github.com/CN-TU/adversarial-recurrent-ids/tree/decision_tree) and follow the instructions there to make it work. Train a decision tree like this: 
+
+    ./learn.py --dataroot flows.pickle --function train_dt
+    
+Your trained decision tree will be output in the ```runs``` folder. Change the ```prefix_path``` in ```ebpf_wrapper.cc``` to point to the directory containing your new decision tree and recompile it (see above ([Run in userspace](#run-in-userspace)) or ([Run as eBPF](#run-as-ebpf))). 
