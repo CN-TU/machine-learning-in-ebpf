@@ -27,7 +27,7 @@ Moreover you need the bcc headers, which can be installed with ```sudo apt insta
 
 ## Train a decision tree
 
-To train a decision tree, check out the repository [decision_tree branch of the adversarial-recurrent-ids repository](https://github.com/CN-TU/adversarial-recurrent-ids/tree/decision_tree) and follow the instructions there to make it work. Train a decision tree like this: 
+To train a decision tree, check out the [decision_tree branch of the adversarial-recurrent-ids repository](https://github.com/CN-TU/adversarial-recurrent-ids/tree/decision_tree) and follow the instructions there to make it work. Train a decision tree like this: 
 
     ./learn.py --dataroot flows.pickle --function train_dt
     
