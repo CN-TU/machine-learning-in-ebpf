@@ -1,7 +1,7 @@
 # machine-learning-in-ebpf
 Contact: Maximilian Bachl
 
-This repository contains the code for the upcoming paper *A flow-based IDS using Machine Learning in eBPF* ([arXiv](https://arxiv.org/abs/2102.09980)).
+This repository contains the code for the paper *A flow-based IDS using Machine Learning in eBPF* ([arXiv](https://arxiv.org/abs/2102.09980)).
 
 Requires Linux kernel >= 5.3 because 5.3 adds limited support for loops is eBPF. 
 
