@@ -13,6 +13,10 @@ You'll need the bcc library, which can be installed with ```sudo apt install bcc
 
 Moreover you need the bcc headers, which can be installed with ```sudo apt install libbpfcc-dev``` on Debian. 
 
+Also, some generic kernel headers might be needed. Install them with `sudo apt install linux-headers-$(uname -r)` on Debian. 
+
+If you encounter some problems, [the resolution of this issue](https://github.com/CN-TU/machine-learning-in-ebpf/issues/1) might help. 
+
 ## Run in userspace
 
     g++ -DUSERSPACE -fpermissive -I/usr/include/bcc ebpf_wrapper.cc -lbcc -o ebpf_wrapper
