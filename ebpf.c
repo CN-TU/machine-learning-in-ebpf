@@ -280,7 +280,6 @@ int filter(struct __sk_buff *skb) {
 			int current_node = 0;
 
 			#ifndef USERSPACE
-			// bpf_trace_printk("eggs\n");
 			for (uint64_t i = 0; i < MAX_TREE_DEPTH; i++) {
 				// bpf_trace_printk("i: %lu\n", i);
 				int64_t* current_left_child = children_left.lookup(&current_node);
