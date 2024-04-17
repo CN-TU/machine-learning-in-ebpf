@@ -308,9 +308,12 @@ int filter(struct __sk_buff *skb) {
 
 			if (correct_value != NULL) {
 				xfsm_val->is_anomaly = (bool) correct_value;
+				// IMPORTANT: You'll need to uncomment these lines if you actually want to drop packets. They're commented because it's better for benchmarking. 
+		        	// if (xfsm_val->is_anomaly) {
+				//     return 0; // Drop the packet if it is considered malicious
+		        	// }
 			}
-
-			#else
+						#else
 			for (uint64_t i = 0; i < MAX_TREE_DEPTH; i++) {
 				// bpf_trace_printk("i: %lu\n", i);
 				int64_t current_left_child = actual_struct->children_left[current_node];
