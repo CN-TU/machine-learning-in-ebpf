@@ -36,12 +36,9 @@ static unsigned long get_nsecs(void)
 #define FIXED_POINT_DIGITS 16
 
 /*eBPF program.
-	Filter IP and TCP packets, having payload not empty
-	and containing "HTTP", "GET", "POST" ... as first bytes of payload
-	if the program is loaded as PROG_TYPE_SOCKET_FILTER
-	and attached to a socket
-	return  0 -> DROP the packet
-	return -1 -> KEEP the packet and return it to user space (userspace can read it from the socket_fd )
+By default DOES NOT drop malicious packets to enable better benchmarking
+return  0 -> DROP the packet
+return -1 -> KEEP the packet and return it to user space (userspace can read it from the socket_fd )
 */
 #ifdef USERSPACE
 int filter(uint8_t* skb, struct shared_struct* actual_struct) {
@@ -308,7 +305,7 @@ int filter(struct __sk_buff *skb) {
 
 			if (correct_value != NULL) {
 				xfsm_val->is_anomaly = (bool) correct_value;
-				// IMPORTANT: You'll need to uncomment these lines if you actually want to drop packets. They're commented because it's better for benchmarking. 
+				// IMPORTANT: You'll need to uncomment lines like the following if you actually want to drop packets. They're commented because it's better for benchmarking. 
 		        	// if (xfsm_val->is_anomaly) {
 				//     return 0; // Drop the packet if it is considered malicious
 		        	// }
