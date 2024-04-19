@@ -29,6 +29,8 @@ If you encounter some problems, [the resolution of this issue](https://github.co
     
     sudo python3.7 test.py --run_scenario just_one_flow
 
+By default packets are not dropped for benchmarking reasons. If you want to actually drop packets, you have to make sure to return 0 for "malicious" packets (see ebpf.c, search for a comment starting with "IMPORTANT"). 
+
 ## Train a decision tree
 
 To train a decision tree, check out the [decision_tree branch of the adversarial-recurrent-ids repository](https://github.com/CN-TU/adversarial-recurrent-ids/tree/decision_tree) and follow the instructions there to make it work. Train a decision tree like this: 
