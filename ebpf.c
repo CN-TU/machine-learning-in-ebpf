@@ -288,7 +288,8 @@ int filter(struct __sk_buff *skb) {
 				if (current_feature == NULL || current_threshold == NULL || current_left_child == NULL || current_right_child == NULL || *current_left_child == TREE_LEAF) {
 					break;
 				} else {
-					int64_t* real_feature_value = all_features.lookup((int*) current_feature);
+					int idx = (int)*current_feature;
+					int64_t* real_feature_value = all_features.lookup(&idx);
 					if (real_feature_value != NULL) {
 						if (*real_feature_value <= *current_threshold) {
 							current_node = (int) *current_left_child;
